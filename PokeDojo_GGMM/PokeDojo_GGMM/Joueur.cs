@@ -29,8 +29,20 @@ namespace PokeDojo_GGMM
         //Constructeur
         public Joueur(string nom, List<Pokemon> sac)
         {
-            _sac = sac;
-            nom = Nom;
+            if(sac.Count != 3)
+            {
+                Console.WriteLine("Erreur, un joueur doit avoir 3 Pokémons");
+                //!! Est-ce que le constructeur a moyen de s'autodétruire vu que les conditions ne sont pas remplies ? Sinon on lui en donne trois aléatoirement.
+            }
+            else
+            {
+                _sac = sac;
+                nom = Nom;
+            }
+
         }
+
+        //!! Quand on aura une BDD de pokémons il faudra que ce constructeur tire des Pokemons aléatoirement.
+        public Joueur() : this("Joueur",new List<Pokemon>()) { }
     }
 }
