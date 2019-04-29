@@ -8,33 +8,69 @@ namespace PokeDojo_GGMM
 {
     class Pokemon
     {
+        //!! verifier que la syntaxe est bonne
+        public readonly List<string> _types = new List<string>(new string[] { "Plante", "Feu", "Eau", "Glace", "Dragon", "Ténèbres", "Argent", "Roche"  });
         //Caractéristiques initiales du pokémon.
         //!!Les niveau d'autorisation de lecture et d'écriture sont encore sujets à évoluer.
-        public string Nom { get; private set; }
+        public string Nom { get; protected set; }
         //PV pour points de vie
-        public int PV { get; private set; }
+        public int PV { get; protected set; }
         //PA pour Puissance d'attaque
-        public int PA { get; private set; }
-        public int Degats { get; set; }
+        public int PA { get; protected set; }
+        public List<int> HistoriqueDegats { get; set; }
+        public int MarqueurDegats { get; set; }
+        public int TypeElementaire { get;}
+        public int TypeVulnerable { get; }
 
-        //!!Est-ce qu'on a un nombre limité de types ? l'ennoncé note "etc." ce qui me fait supposer que non.
-        //!!Rappel de quelques types : plante, feu, eau, électrique, psy, poison, etc.
-        public string TypeElementaire { get;}
-
-        //!!Je pense qu'une vérification s'impose, peut être même au sein d'une classe Type
-        //!!Que l'on définirait. Il faut que le feu n'ai qu'une seule faiblesse assignée, pour
-        //!! Empêcher deux pokémons de type feu d'avoir deux faiblesses différentes. Je pense à un tableau dans une classe.
-        public string TypeFaiblesse { get;}
 
 
         //Constructeur
-        public Pokemon(string nom, int pV, int pA, string typeElementaire, string typeFaiblesse)
+        public Pokemon(string nom, int pV, int pA, char typeElementaire)
         {
             Nom = nom;
             PV = pV;
             PA = pA;
-            TypeElementaire = typeElementaire;
-            TypeFaiblesse = TypeFaiblesse;
+            HistoriqueDegats = new List<int>();
+            MarqueurDegats = 0;
+
+            int i = 0;
+            bool stay = true;
+            while(stay && i<_types.Count)
+            {
+                if (typeElementaire == _types[i][0])
+                {
+                    TypeElementaire = i;
+                    stay = false;
+                }
+                i++;
+            }
+            if (stay)
+                Console.WriteLine("ERREUR : le Type \"{0}\" n'existe pas",typeElementaire);
+
+            if (typeElementaire != _types.Count)
+                TypeVulnerable = typeElementaire++;
+            else
+                TypeVulnerable = 0;
+
         }
+
+        //Méthode
+        public override string ToString()
+        {
+            //!! liste chainées
+            return "Nom : " + Nom +"\nType : " + _types[TypeElementaire] +"\nFaiblesse : " + _types[TypeVulnerable] + "\nPV : " + PV +"\nPA : " + PA;
+        }
+
+        public void Attaque(Pokemon ennemi)
+        {
+            Random R = new Random();
+            if (ennemi.TypeVulnerable == TypeElementaire)
+            {
+                int Degats = (1 + R.Next(-20, 20) / 100) * PA;
+                ennemi.MarqueurDegats += Degats;
+                ennemi.HistoriqueDegats.Add(Degats);
+            }
+        }
+        
     }
 }
