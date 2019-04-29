@@ -61,15 +61,24 @@ namespace PokeDojo_GGMM
             return "Nom : " + Nom +"\nType : " + _types[TypeElementaire] +"\nFaiblesse : " + _types[TypeVulnerable] + "\nPV : " + PV +"\nPA : " + PA;
         }
 
-        public void Attaque(Pokemon ennemi)
+        public bool RecevoirDegats(Pokemon ennemi)
         {
             Random R = new Random();
-            if (ennemi.TypeVulnerable == TypeElementaire)
+            int Degats = (int)Math.Ceiling((1 + (R.Next(-20, 20) / (double)100)) * ennemi.PA);
+            if (ennemi.TypeElementaire == TypeVulnerable)
             {
-                int Degats = (1 + R.Next(-20, 20) / 100) * PA;
-                ennemi.MarqueurDegats += Degats;
-                ennemi.HistoriqueDegats.Add(Degats);
+                MarqueurDegats += 2*Degats;
+                HistoriqueDegats.Add(2*Degats);
             }
+            else
+            {
+                MarqueurDegats += Degats;
+                HistoriqueDegats.Add(Degats);
+            }
+
+            if (MarqueurDegats >= PV)
+                return true;
+            return false;
         }
         
     }
