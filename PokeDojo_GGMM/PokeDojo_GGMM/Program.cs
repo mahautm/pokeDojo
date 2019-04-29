@@ -13,6 +13,10 @@ namespace PokeDojo_GGMM
             //!! Pour Guillaumme : Je note les commentaires qui devront être
             //!! supprimés avant le rendu final avec 2 points d'exclammation
             //!! C'est pour m'aider à coder, pas pour expliquer le code.
+
+            Arene arene = new Arene();
         }
+
+        public static void DeroulerPartie()
     }
 }
