@@ -10,7 +10,7 @@ namespace PokeDojo_GGMM
     {
         static void Main(string[] args)
         {
-            //!! Pour Guillaumme : Je note les commentaires qui devront être
+            //!! Pour Guillaume : Je note les commentaires qui devront être
             //!! supprimés avant le rendu final avec 2 points d'exclammation
             //!! C'est pour m'aider à coder, pas pour expliquer le code.
 
@@ -32,6 +32,7 @@ namespace PokeDojo_GGMM
             Joueur j3 = new Joueur("BenDlaRochèl", new List<Pokemon> { p3, p4, p5 });
 
             Arene arene = new Arene(new List<Joueur> { j0, j1, j2, j3 });
+            Menu();
         }
 
         public static void DeroulerPartie(Arene arene)
@@ -47,7 +48,45 @@ namespace PokeDojo_GGMM
         //deux participants, initiative  = 0 ou 1, désigne le joueur qui commence
         public static void JouerTour(Arene arene, List<Joueur> participants, int initiative)
         {
-            ;
+        }
+
+        public static int Menu()
+        {
+            // Menu de choix : choisir une action au cours d'une partie à l'aide des flèches du clavier,
+            //renvoie une valeur entre 1 et 4 en fonction du choix utilisateur
+            ConsoleKey cki = ConsoleKey.UpArrow;
+            int choix = 0;
+            do
+            {
+                Console.Clear();
+                if (choix == 0)
+                    Console.WriteLine(">>\tAttaque\t\t\tReplis\n\tSoin\t\t\tFuite");
+                else if (choix == 1)
+                    Console.WriteLine("\tAttaque\t\t>>\tReplis\n\tSoin\t\t\tFuite");
+                else if (choix == 2)
+                    Console.WriteLine("\tAttaque\t\t\tReplis\n>>\tSoin\t\t\tFuite");
+                else if (choix == 3)
+                    Console.WriteLine("\tAttaque\t\t\tReplis\n\tSoin\t\t>>\tFuite");
+
+                //Attente puis enregistrement d'une entrée utilisateur
+                cki = Console.ReadKey().Key;
+
+                //Modification de l'option menu choisie en fonction de la saisie utilisateur
+                if (cki == ConsoleKey.LeftArrow)
+                    choix = (choix - 1) % 4;
+                if (cki == ConsoleKey.RightArrow)
+                    choix = (choix + 1) % 4;
+                if (cki == ConsoleKey.UpArrow)
+                    choix = (choix + 2) % 4;
+                if (cki == ConsoleKey.DownArrow)
+                    choix = (choix - 2) % 4;
+
+                if (choix < 0)
+                    choix = 4 + choix;
+
+
+            } while (cki != ConsoleKey.Enter && cki != ConsoleKey.Spacebar);
+            return choix;
         }
 
     }
