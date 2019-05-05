@@ -37,6 +37,17 @@ namespace PokeDojo_GGMM
 
         public static void DeroulerPartie(Arene arene)
         {
+            //!! 1 : Faire apparaitre l'arbre des joueurs
+            //!! 2 : Faire jouer le match entre le joueur et son adversaire
+                //!! Choisir au hasard lequel commence grâce au pile ou face
+                //!! Chacun leur tour les joueurs choisissent leurs actions, à la fin l'un d'entre eux meurent
+                    //!! Si le joueur meurt, aller à l'écran de fin, montrer les arbres simulés pour qu'il sache quel joueur virtuel a gagné
+                    //!! Si l'adversaire meurt, aller à l'étape suivante
+            //!! 3 : Simuler les matchs entre les joueurs aléatoires
+                //!! Faire jouer une partie mais sans afficher les écrans texte intermédiaires
+                //!! OU Assigner une probabilité de victoire en fonction du type et de la puissance d'attaque en mode 'light'
+            //!! Itérer jusqu'à la finale
+                //!! Ajouter un écran de victoire et un HIGHSCORES pour l'UX
             ;
         }
 
@@ -48,6 +59,7 @@ namespace PokeDojo_GGMM
         //deux participants, initiative  = 0 ou 1, désigne le joueur qui commence
         public static void JouerTour(Arene arene, List<Joueur> participants, int initiative)
         {
+
         }
 
         public static int Menu()
@@ -87,6 +99,42 @@ namespace PokeDojo_GGMM
 
             } while (cki != ConsoleKey.Enter && cki != ConsoleKey.Spacebar);
             return choix;
+        }
+
+        static bool JouerPileOuFace()
+        {
+            bool choix = true;
+            ConsoleKey cki = ConsoleKey.UpArrow;
+            Random R = new Random();
+
+            //Menu controllable avec les flèches du clavier
+            do
+            {
+                Console.Clear();
+                if (choix == true)
+                    Console.WriteLine("  --> Pile <--   ou       Face\n\n(utiliser les flèches du clavier pour sélectionner)");
+                else Console.WriteLine("      Pile       ou   --> Face <--\n\n(utiliser les flèches du clavier pour sélectionner)");
+                cki = Console.ReadKey().Key;
+
+
+                if (cki == ConsoleKey.LeftArrow || cki == ConsoleKey.RightArrow) choix = !choix;
+
+            } while (cki != ConsoleKey.Enter && cki != ConsoleKey.Spacebar);
+            Console.Clear();
+
+            //Application du choix menu, utilisation de l' "aléatoire" de la machine
+            if (choix == (new Random().Next(2) == 0))
+            {
+                Console.WriteLine("... Gagné !! Bravo, tu joueras donc le premier");
+                Console.ReadKey();
+                return true;
+            }
+            else
+            {
+                Console.WriteLine("... Perdu. Pas de chance. Je commencerai donc la partie.");
+                Console.ReadKey();
+                return false;
+            }
         }
 
     }
