@@ -61,5 +61,10 @@ namespace PokeDojo_GGMM
 
         //!! Quand on aura une BDD de pokémons il faudra que ce constructeur tire des Pokemons aléatoirement.
         public Joueur() : this("Joueur",new List<Pokemon>()) { }
+
+        public override string ToString()
+        {
+            return Nom;
+        }
     }
 }
