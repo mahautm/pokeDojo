@@ -13,15 +13,23 @@ namespace PokeDojo_GGMM
             //!! LIENS POUR LES POKEMONS
             //!! https://bulbapedia.bulbagarden.net/wiki/List_of_Pok%C3%A9mon_by_base_stats_(Generation_VII-present)
             //!! https://www.pokebip.com/pokedex/4eme_generation_pokeliste_liste_des_pokemon.html
+
+            //Liste de pokémons
             Pokemon p0 = new Pokemon("Bulbizarre", 45, 49, 'P');
             Pokemon p1 = new Pokemon("Salamèche", 39, 52, 'F');
             Pokemon p2 = new Pokemon("Carapuce", 44, 48, 'E');
             Pokemon p3 = new Pokemon("Givrali", 65, 60, 'G');
+
             Pokemon p4 = new Pokemon("Minidraco", 41, 64, 'D');
             Pokemon p5 = new Pokemon("Farfuret", 55, 95, 'T');
             Pokemon p6 = new Pokemon("Foretress", 75, 90, 'A');
             Pokemon p7 = new Pokemon("Embrylex", 50, 64, 'R');
 
+
+
+
+
+            //Liste des joueurs
             Joueur j0 = new Joueur("Guiguite38", new List<Pokemon> { p0, p1, p2 });
             Joueur j1 = new Joueur("Matmut14", new List<Pokemon> { p1, p2, p3 });
             Joueur j2 = new Joueur("Zgoogo33", new List<Pokemon> { p2, p3, p4 });
@@ -44,7 +52,68 @@ namespace PokeDojo_GGMM
             Console.ReadLine();
 
             //ChoisirPokemon(j0);
+
+            //!! 16 pokemons avec 16 * 2 évolutions
+            //!! soit 2 par 'type'
+
+            //!!{ "Plante", "Feu", "Eau", "Glace", "Dragon", "Ténèbres", "Argent", "Roche"  });
+            
+            //Création des pokémons
+            List<string> basique = new List<string> {
+                "TrukiPique",   "ShozaFeuil",
+                "TrukiBrul",    "TrukaMèche",
+                "TrukiNage",    "TrukaBull",
+                "TrukiCaille",  "ShozaRtik",
+                "TrukiVol",     "TrukaPaReveiller",
+                "TrukiCraint",  "TrukaOtique",
+                "TrukiBrille",  "TrukaRchivénère",
+                "TrukiTektonik","TrukaLcaire"
+            };
+
+            List<string> alpha = new List<string>
+            {
+                "Mini", "Riqui", "TouPeti", "Shifoumi",
+                "TroMimi", "Kawai", "Choupi", "Mimi"
+            };
+
+            List<string> beta = new List<string>
+            {
+                "Mega", "Meta", "Supra", "Omega",
+                "Beta", "Hypra", "Giga", "Ultra"
+            };
+
+            List<string> types = new List<string>(new string[] { "Plante", "Feu", "Eau", "Glace", "Dragon", "Ténèbres", "Argent", "Roche" });
+
+    }
+
+    public List<Pokemon> CreerPokemons(List<string> basique, List<string> alpha, List<string> beta, List<string> type)
+        {
+            List<Pokemon> ListePokemons = new List<Pokemon>();
+
+            //PV entre 50&75, 100&150, 200&250
+            //PA entre 15&25, 35&55, 45&65
+
+            int count = 0;
+            int indexType = 0;
+            Random random = new Random();
+
+            foreach (string basik in basique)
+            {
+                if (count % 2 == 6)
+                    indexType++;
+
+                ListePokemons.Add(new Pokemon(beta[random.Next(8)] + basik, random.Next(50, 75), random.Next(15, 25), char.Parse(type[indexType])));
+
+                ListePokemons.Add(new Pokemon(basik, random.Next(100, 150), random.Next(35, 55), char.Parse(type[indexType])));
+
+                ListePokemons.Add(new Pokemon(alpha[random.Next(8)] + basik, random.Next(200, 250), random.Next(45, 65), char.Parse(type[indexType])));
+                
+                count++;
+            }
+
+            return ListePokemons;
         }
+
 
         public static void DeroulerPartie(Arene arene)
         {
@@ -87,8 +156,8 @@ namespace PokeDojo_GGMM
             {
                 JouerTour(j1,j2);
             }
-
-                return j1;
+            
+            return j1;
         }
 
         //deux participants, initiative  = 0 ou 1, désigne le joueur qui commence
@@ -113,7 +182,7 @@ namespace PokeDojo_GGMM
                 if (j1.EstHumain)
                 {
                     ChoisirPokemon(j1);
-                    Console.WriteLine("")
+                    Console.WriteLine("");
                 }
             }
             else if (choix == 3)
