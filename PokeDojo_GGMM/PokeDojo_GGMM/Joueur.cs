@@ -3,12 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
+//!! Faire le constructeur par défaut de génération aléatoire
 namespace PokeDojo_GGMM
 {
     class Joueur
     {
         public string Nom { get; set; }
+        public bool EstHumain { get; private set; }
 
         //Un joueur peut avoir jusqu'à trois pokémon dans son sac.
         //!! Y a t'il une méthode où je n'ai pas besoin de la variable _sac et où je peux tout faire à la propriété?
@@ -17,12 +18,12 @@ namespace PokeDojo_GGMM
         {
             get
             {
-                return this._sac;
+                return _sac;
             }
             set
             {
                 if(value.Count == 3)
-                this._sac = value;
+                _sac = value;
             }
         }
 
@@ -37,7 +38,7 @@ namespace PokeDojo_GGMM
             else
             {
                 _sac = sac;
-                nom = Nom;
+                Nom = nom;
             }
 
         }
