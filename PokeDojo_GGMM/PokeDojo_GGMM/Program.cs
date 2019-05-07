@@ -68,6 +68,7 @@ namespace PokeDojo_GGMM
         // S'il y a un joueur humain, c'est j1
         public static Joueur JouerCombat(Joueur j1, Joueur j2)
         {
+            bool commencerJ1 = JouerPileOuFace();
             Random R = new Random();
             j2.Actif = j2.Sac[R.Next(3)];
             if (j1.EstHumain)
@@ -77,22 +78,46 @@ namespace PokeDojo_GGMM
                 Console.WriteLine("\n\t\t--- Appuyer sur une touche pour monter sur le Tatami ---");
                 Console.ReadKey();
                 j1.Actif = ChoisirPokemon(j1);
-                Console.WriteLine("{0} : {1} je te choisis !",j1.Nom, p1.Nom);
-                Console.WriteLine("{0} regarde dans son sac...\n{0} : {1} je te choisis !", j2.Nom, p2.Nom);
+                Console.WriteLine("{0} : {1} je te choisis !",j1.Nom, j1.Actif.Nom);
+                Console.WriteLine("{0} regarde dans son sac...\n{0} : {1} je te choisis !", j2.Nom, j2.Actif.Nom);
             }
             else
                 j1.Actif = j1.Sac[R.Next(3)];
 
-            while(j1.Actif.MarqueurDegats < j1.Actif.PV && j2.Actif.MarqueurDegats < j2.Actif.PV)
+            List<Joueur> Dojo;
+
+            bool pokeVivant = true;
+            while (pokeVivant)
             {
-                JouerTour(j1,j2);
+                if (commencerJ1)
+                {
+                    pokeVivant = JouerTour(j1, j2);
+                }
+                if(!pokeVivant)
+                {
+                    //Si le pokémon actif est KO, on cherche dans le sac s'il reste des pokémons vivants
+                    foreach (Pokemon p in j2.Sac)
+                        if (p.MarqueurDegats < p.PV)
+                            j2.Actif = p;
+                    if (j2.Actif.MarqueurDegats < j2.Actif.PV)
+                        // Si ce n'est pas le cas, c'est l'autre joueur qui a gagné.
+                        return j1;
+                }
+                else pokeVivant = JouerTour(j2, j1);
+                if (!pokeVivant)
+                {
+                    if()
+                }
+
+                commencerJ1 = true;
             }
+
 
                 return j1;
         }
 
         //deux participants, initiative  = 0 ou 1, désigne le joueur qui commence
-        public static void JouerTour(Joueur j1, Joueur j2)
+        public static bool JouerTour(Joueur j1, Joueur j2)
         {
             Random R = new Random();
             int choix;
@@ -102,10 +127,18 @@ namespace PokeDojo_GGMM
                 Console.WriteLine("{0} Attend vos instruction ...", j1.Actif.Nom);
                 choix = Menu();
             }
-            else choix = R.Next(4);
+            else choix = 1;
             if (choix == 1)
             {
                 //!!Attaque
+
+                j2.Actif.RecevoirDegats(j1.Actif);
+                if (j1.EstHumain || j2.EstHumain)
+                {
+                    Console.WriteLine("{0} Attaque {1}, qui perd {2} points de vie !", j1.Actif.Nom, j2.Actif.Nom, j2.Actif.HistoriqueDegats[-1]);
+                }
+                if (j2.Actif.MarqueurDegats > j2.Actif.PV)
+                    return false;
             }
             else if (choix == 2)
             {
@@ -113,18 +146,26 @@ namespace PokeDojo_GGMM
                 if (j1.EstHumain)
                 {
                     ChoisirPokemon(j1);
-                    Console.WriteLine("")
+                    Console.WriteLine("{0} : {1} je te choisis !",j1.Nom,j1.Actif.Nom);
                 }
             }
             else if (choix == 3)
             {
                 //!!Soin
+                if (j1.EstHumain)
+                {
+                    Console.WriteLine("WIP : Cette option n'est pas encore disponible");
+                }
             }
             else if (choix == 4)
             {
                 //!!Fuite
+                if (j1.EstHumain)
+                {
+                    Console.WriteLine("WIP : Cette option n'est pas encore disponible");
+                }
             }
-            Console.WriteLine("");
+            return true;
         }
 
         public static int Menu()
@@ -204,6 +245,7 @@ namespace PokeDojo_GGMM
 
         public static Pokemon ChoisirPokemon(Joueur j)
         {
+            //!! Attention il faut empêcher de choisir les pokémons KO
             Console.Clear();
 
 
@@ -215,9 +257,18 @@ namespace PokeDojo_GGMM
                 Console.WriteLine("{0} ouvre son sac et regarde à l'interieur : \n", j.Nom);
                 for (int i = 0; i < j.Sac.Count(); i++)
                 {
-                    if(choix == i)
-                        Console.Write(">>");
-                    Console.WriteLine("\t{0} \t: {1} PV, \t{2} PA", j.Sac[i].Nom, j.Sac[i].PV- j.Sac[i].MarqueurDegats, j.Sac[i].PA);
+                    if (choix == i)
+                    {
+                        if (j.Sac[choix].MarqueurDegats < j.Sac[choix].PV)
+                            Console.Write(">>");
+                        else Console.Write("*|");
+                    }
+
+                    Console.Write("\t{0} \t: {1} PV, \t{2} PA", j.Sac[i].Nom, j.Sac[i].PV - j.Sac[i].MarqueurDegats, j.Sac[i].PA);
+                    if (j.Sac[choix].MarqueurDegats < j.Sac[choix].PV)
+                        Console.Write("\tKO");
+                    Console.WriteLine();
+
                 }
                 //Attente puis enregistrement d'une entrée utilisateur
                 cki = Console.ReadKey().Key;
@@ -232,7 +283,7 @@ namespace PokeDojo_GGMM
                     choix = 3 + choix;
 
 
-            } while (cki != ConsoleKey.Enter && cki != ConsoleKey.Spacebar);
+            } while (cki != ConsoleKey.Enter && cki != ConsoleKey.Spacebar && j.Sac[choix].MarqueurDegats < j.Sac[choix].PV);
             Console.Clear();
             return j.Sac[choix];
         }
