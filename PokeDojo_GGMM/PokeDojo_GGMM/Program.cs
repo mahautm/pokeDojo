@@ -32,7 +32,8 @@ namespace PokeDojo_GGMM
             Joueur j3 = new Joueur("BenDlaRochèl", new List<Pokemon> { p3, p4, p5 });
 
             Arene arene = new Arene(new List<Joueur> { j0, j1, j2, j3 });
-            Menu();
+
+            ChoisirPokemon(j0);
         }
 
         public static void DeroulerPartie(Arene arene)
@@ -50,16 +51,36 @@ namespace PokeDojo_GGMM
                 //!! Ajouter un écran de victoire et un HIGHSCORES pour l'UX
             ;
         }
-
-        public static void JouerCombat(Arene arene)
+        // Dans la version actuelle du jeu il ne peut y avoir qu'un joueur humain.
+        // S'il y a un joueur humain, c'est j1
+        public static Joueur JouerCombat(Joueur j1, Joueur j2)
         {
-            ;
+            Random R = new Random();
+            //p2 est le pokemon actif de j2
+            Pokemon p2 = j2.Sac[R.Next(3)];
+            //p1 est le pokemon actif de j1
+            Pokemon p1;
+            if (j1.EstHumain)
+            {
+                Console.WriteLine("Bienvenue dans ce tournoi : {0} vs {1}", j1.Nom, j2.Nom);
+                Console.WriteLine("Montez sur le Tatami, et choisissez votre premier pokémon !");
+                p1 = ChoisirPokemon(j1);
+            }
+            else
+                p1 = j1.Sac[R.Next(3)];
+
+            while(p1.MarqueurDegats < p1.PV)
+            {
+
+            }
+
+                return j1;
         }
 
         //deux participants, initiative  = 0 ou 1, désigne le joueur qui commence
         public static void JouerTour(Arene arene, List<Joueur> participants, int initiative)
         {
-
+            Console.WriteLine("");
         }
 
         public static int Menu()
@@ -101,7 +122,7 @@ namespace PokeDojo_GGMM
             return choix;
         }
 
-        static bool JouerPileOuFace()
+        public static bool JouerPileOuFace()
         {
             bool choix = true;
             ConsoleKey cki = ConsoleKey.UpArrow;
@@ -137,5 +158,38 @@ namespace PokeDojo_GGMM
             }
         }
 
+        public static Pokemon ChoisirPokemon(Joueur j)
+        {
+            Console.Clear();
+
+
+            ConsoleKey cki = ConsoleKey.UpArrow;
+            int choix = 0;
+            do
+            {
+                Console.Clear();
+                Console.WriteLine("{0} ouvre son sac et regarde à l'interieur : \n", j.Nom);
+                for (int i = 0; i < j.Sac.Count(); i++)
+                {
+                    if(choix == i)
+                        Console.Write(">>");
+                    Console.WriteLine("\t{0} \t: {1} PV, \t{2} PA", j.Sac[i].Nom, j.Sac[i].PV- j.Sac[i].MarqueurDegats, j.Sac[i].PA);
+                }
+                //Attente puis enregistrement d'une entrée utilisateur
+                cki = Console.ReadKey().Key;
+
+                //Modification de l'option menu choisie en fonction de la saisie utilisateur
+                if (cki == ConsoleKey.UpArrow)
+                    choix = (choix - 1) % 3;
+                if (cki == ConsoleKey.DownArrow)
+                    choix = (choix + 1) % 3;
+
+                if (choix < 0)
+                    choix = 3 + choix;
+
+
+            } while (cki != ConsoleKey.Enter && cki != ConsoleKey.Spacebar);
+            return j.Sac[choix];
+        }
     }
 }
