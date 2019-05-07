@@ -27,19 +27,29 @@ namespace PokeDojo_GGMM
             Joueur j2 = new Joueur("Zgoogo33", new List<Pokemon> { p2, p3, p4 });
             Joueur j3 = new Joueur("BenDlaRochèl", new List<Pokemon> { p3, p4, p5 });
 
-            Arene arene = new Arene(new List<Joueur> { j0, j1, j2, j3 });
+            Joueur j4 = new Joueur("CocoNono", new List<Pokemon> { p3, p4, p5 });
+            Joueur j5 = new Joueur("MarTintin", new List<Pokemon> { p3, p4, p5 });
+            Joueur j6 = new Joueur("GogoLeGoth", new List<Pokemon> { p3, p4, p5 });
+            Joueur j7 = new Joueur("Marv-1 LeHun", new List<Pokemon> { p3, p4, p5 });
+
+            Arene arene = new Arene(new List<Joueur> { j0, j1, j2, j3 , j4, j5, j6, j7});
             //Menu();
+
+            arene.Arbre.Add(new List<Joueur> { j1, j2, j5, j7 });
+            arene.Arbre.Add(new List<Joueur> { j1, j7 });
+            arene.Arbre.Add(new List<Joueur> { j7 });
 
             arene.AfficherArbreCompetition();
 
             Console.ReadLine();
 
-            ChoisirPokemon(j0);
+            //ChoisirPokemon(j0);
         }
 
         public static void DeroulerPartie(Arene arene)
         {
             //!! 1 : Faire apparaitre l'arbre des joueurs
+            arene.AfficherArbreCompetition();
 
             //!! 2 : Faire jouer le match entre le joueur et son adversaire
                 //!! Choisir au hasard lequel commence grâce au pile ou face
