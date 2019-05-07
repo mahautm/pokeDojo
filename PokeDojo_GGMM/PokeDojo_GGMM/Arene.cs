@@ -20,9 +20,9 @@ namespace PokeDojo_GGMM
             set
             {
                 //!! à modifier avec 16
-                if (value.Count == 4)
+                if (value.Count == 8)
                     _competiteurs = value;
-                else Console.WriteLine("Il faut 4 compétiteurs exactement, vérifiez vos données !");
+                else Console.WriteLine("Il faut 8 compétiteurs exactement, vérifiez vos données !");
             }
         }
 
@@ -87,12 +87,7 @@ namespace PokeDojo_GGMM
         public void AfficherArbreCompetition()
         {
             // affiche la liste des compétiteurs
-
-            //!! à suprimer
-            foreach(Joueur competiteur in _arbre[0]){
-                Console.WriteLine(competiteur);
-            }
-
+            Console.WriteLine("Voici les competiteurs !");
             foreach (Joueur competiteur in Arbre[0])
             {
                 int index = Arbre[0].IndexOf(competiteur)+1;
@@ -101,15 +96,22 @@ namespace PokeDojo_GGMM
                     numeroJoueur += 0 + "" + index;
                 else
                     numeroJoueur += index;
-                Console.WriteLine("P" + numeroJoueur + " " + competiteur);
+                Console.Write("P" + numeroJoueur + " " + competiteur + "\t\t");
+
+                if(Arbre[0].IndexOf(competiteur)%4==3)
+                    Console.WriteLine();
             }
 
             // affiche l'arbre de la compétition
             foreach (List<Joueur> Round in Arbre)
             {
-                Console.WriteLine();
+                int round = Arbre.IndexOf(Round) + 1;
+                Console.WriteLine("\n\nRound " + round);
+
+                int positionVS = 0;
                 foreach (Joueur competiteurRestant in Round)
                 {
+                    
                     int index = Arbre[0].IndexOf(competiteurRestant)+1;
                     string numeroJoueur = "";
                     if (index < 10)
@@ -117,7 +119,18 @@ namespace PokeDojo_GGMM
                     else
                         numeroJoueur += index;
 
-                    Console.Write("P" + numeroJoueur + "\t");
+                    if(positionVS % 2 == 0 && Round.Count != 1)
+                    {
+                        positionVS++;
+                        Console.Write("P" + numeroJoueur + " VS ");
+                    }
+                        
+                    else
+                    {
+                        positionVS++;
+                        Console.Write("P" + numeroJoueur + "\t");
+                    }                       
+                    
                 }
             }
         }
