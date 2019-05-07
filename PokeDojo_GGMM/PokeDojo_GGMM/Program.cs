@@ -10,10 +10,6 @@ namespace PokeDojo_GGMM
     {
         static void Main(string[] args)
         {
-            //!! Pour Guillaume : Je note les commentaires qui devront être
-            //!! supprimés avant le rendu final avec 2 points d'exclammation
-            //!! C'est pour m'aider à coder, pas pour expliquer le code.
-
             //!! LIENS POUR LES POKEMONS
             //!! https://bulbapedia.bulbagarden.net/wiki/List_of_Pok%C3%A9mon_by_base_stats_(Generation_VII-present)
             //!! https://www.pokebip.com/pokedex/4eme_generation_pokeliste_liste_des_pokemon.html
@@ -32,17 +28,23 @@ namespace PokeDojo_GGMM
             Joueur j3 = new Joueur("BenDlaRochèl", new List<Pokemon> { p3, p4, p5 });
 
             Arene arene = new Arene(new List<Joueur> { j0, j1, j2, j3 });
-            Menu();
+            //Menu();
+
+            arene.AfficherArbreCompetition();
+
+            Console.ReadLine();
         }
 
         public static void DeroulerPartie(Arene arene)
         {
             //!! 1 : Faire apparaitre l'arbre des joueurs
+
             //!! 2 : Faire jouer le match entre le joueur et son adversaire
                 //!! Choisir au hasard lequel commence grâce au pile ou face
                 //!! Chacun leur tour les joueurs choisissent leurs actions, à la fin l'un d'entre eux meurent
                     //!! Si le joueur meurt, aller à l'écran de fin, montrer les arbres simulés pour qu'il sache quel joueur virtuel a gagné
                     //!! Si l'adversaire meurt, aller à l'étape suivante
+
             //!! 3 : Simuler les matchs entre les joueurs aléatoires
                 //!! Faire jouer une partie mais sans afficher les écrans texte intermédiaires
                 //!! OU Assigner une probabilité de victoire en fonction du type et de la puissance d'attaque en mode 'light'
