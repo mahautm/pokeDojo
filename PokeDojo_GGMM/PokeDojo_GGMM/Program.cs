@@ -56,30 +56,61 @@ namespace PokeDojo_GGMM
         public static Joueur JouerCombat(Joueur j1, Joueur j2)
         {
             Random R = new Random();
-            //p2 est le pokemon actif de j2
-            Pokemon p2 = j2.Sac[R.Next(3)];
-            //p1 est le pokemon actif de j1
-            Pokemon p1;
+            j2.Actif = j2.Sac[R.Next(3)];
             if (j1.EstHumain)
             {
                 Console.WriteLine("Bienvenue dans ce tournoi : {0} vs {1}", j1.Nom, j2.Nom);
                 Console.WriteLine("Montez sur le Tatami, et choisissez votre premier pokémon !");
-                p1 = ChoisirPokemon(j1);
+                Console.WriteLine("\n\t\t--- Appuyer sur une touche pour monter sur le Tatami ---");
+                Console.ReadKey();
+                j1.Actif = ChoisirPokemon(j1);
+                Console.WriteLine("{0} : {1} je te choisis !",j1.Nom, p1.Nom);
+                Console.WriteLine("{0} regarde dans son sac...\n{0} : {1} je te choisis !", j2.Nom, p2.Nom);
             }
             else
-                p1 = j1.Sac[R.Next(3)];
+                j1.Actif = j1.Sac[R.Next(3)];
 
-            while(p1.MarqueurDegats < p1.PV)
+            while(j1.Actif.MarqueurDegats < j1.Actif.PV && j2.Actif.MarqueurDegats < j2.Actif.PV)
             {
-
+                JouerTour(j1,j2);
             }
 
                 return j1;
         }
 
         //deux participants, initiative  = 0 ou 1, désigne le joueur qui commence
-        public static void JouerTour(Arene arene, List<Joueur> participants, int initiative)
+        public static void JouerTour(Joueur j1, Joueur j2)
         {
+            Random R = new Random();
+            int choix;
+            if (j1.EstHumain)
+            {
+
+                Console.WriteLine("{0} Attend vos instruction ...", j1.Actif.Nom);
+                choix = Menu();
+            }
+            else choix = R.Next(4);
+            if (choix == 1)
+            {
+                //!!Attaque
+            }
+            else if (choix == 2)
+            {
+                //!!Replis d'un pokémon
+                if (j1.EstHumain)
+                {
+                    ChoisirPokemon(j1);
+                    Console.WriteLine("")
+                }
+            }
+            else if (choix == 3)
+            {
+                //!!Soin
+            }
+            else if (choix == 4)
+            {
+                //!!Fuite
+            }
             Console.WriteLine("");
         }
 
@@ -87,7 +118,7 @@ namespace PokeDojo_GGMM
         {
             // Menu de choix : choisir une action au cours d'une partie à l'aide des flèches du clavier,
             //renvoie une valeur entre 1 et 4 en fonction du choix utilisateur
-            ConsoleKey cki = ConsoleKey.UpArrow;
+            ConsoleKey cki = Console.ReadKey().Key;
             int choix = 0;
             do
             {
@@ -189,6 +220,7 @@ namespace PokeDojo_GGMM
 
 
             } while (cki != ConsoleKey.Enter && cki != ConsoleKey.Spacebar);
+            Console.Clear();
             return j.Sac[choix];
         }
     }

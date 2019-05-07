@@ -27,6 +27,22 @@ namespace PokeDojo_GGMM
             }
         }
 
+        // Actif est le pokémon en cours d'utilisation dans le combat
+        private Pokemon _actif;
+        public Pokemon Actif
+        {
+            get
+            {
+                return _actif;
+            }
+            set
+            {
+                foreach (Pokemon p in Sac)
+                    if (value == p)
+                        _actif = value;
+            }
+        }
+
         //Constructeur
         public Joueur(string nom, List<Pokemon> sac)
         {
