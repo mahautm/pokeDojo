@@ -19,8 +19,9 @@ namespace PokeDojo_GGMM
         public int PA { get; protected set; }
         public List<int> HistoriqueDegats { get; set; }
         public int MarqueurDegats { get; set; }
-        public int TypeElementaire { get;}
-        public int TypeVulnerable { get; }
+
+        public int TypeElementaire { get; set; } //!! il n'y avait pas de setteur
+        public int TypeVulnerable { get; set; } //!! il n'y avait pas de setteur
 
 
 
@@ -48,17 +49,17 @@ namespace PokeDojo_GGMM
                 Console.WriteLine("ERREUR : le Type \"{0}\" n'existe pas",typeElementaire);
 
             if (typeElementaire != _types.Count)
-                TypeVulnerable = typeElementaire++;
+                TypeVulnerable = TypeElementaire+1;
             else
                 TypeVulnerable = 0;
-
         }
 
         //Méthode
         public override string ToString()
         {
-            //!! liste chainées
-            return "Nom : " + Nom +"\nType : " + _types[TypeElementaire] +"\nFaiblesse : " + _types[TypeVulnerable] + "\nPV : " + PV +"\nPA : " + PA;
+            //return "Nom : " + Nom +"\nType : " + _types[TypeElementaire] +"\nFaiblesse : " + _types[TypeVulnerable] + "\nPV : " + PV +"\nPA : " + PA;
+            //return Nom + "\t" + PV + " PV\t" + PA + "\t" + "Elementaire de " + _types[TypeElementaire];
+            return Nom;
         }
 
         public bool RecevoirDegats(Pokemon ennemi)

@@ -64,7 +64,10 @@ namespace PokeDojo_GGMM
 
         public override string ToString()
         {
-            return Nom;
+            string pokemons = "";
+            foreach (Pokemon pokemon in Sac)
+                pokemons += "\t" + pokemon;
+            return Nom + pokemons;
         }
     }
 }
