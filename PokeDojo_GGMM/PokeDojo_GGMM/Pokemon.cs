@@ -9,7 +9,7 @@ namespace PokeDojo_GGMM
     class Pokemon
     {
         //!! verifier que la syntaxe est bonne
-        public readonly List<string> _types = new List<string>(new string[] { "Plante", "Feu", "Eau", "Glace", "Dragon", "Ténèbres", "Argent", "Roche"  });
+        public readonly List<string> _types = new List<string> { "Plante", "Feu", "Eau", "Glace", "Dragon", "Ténèbres", "Argent", "Roche"  };
         //Caractéristiques initiales du pokémon.
         //!!Les niveau d'autorisation de lecture et d'écriture sont encore sujets à évoluer.
         public string Nom { get; protected set; }
