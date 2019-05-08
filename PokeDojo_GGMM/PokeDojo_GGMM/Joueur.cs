@@ -3,12 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
+//!! Faire le constructeur par défaut de génération aléatoire
 namespace PokeDojo_GGMM
 {
     class Joueur
     {
         public string Nom { get; set; }
+        public bool EstHumain { get; private set; }
 
         //Un joueur peut avoir jusqu'à trois pokémon dans son sac.
         //!! Y a t'il une méthode où je n'ai pas besoin de la variable _sac et où je peux tout faire à la propriété?
@@ -17,12 +18,28 @@ namespace PokeDojo_GGMM
         {
             get
             {
-                return this._sac;
+                return _sac;
             }
             set
             {
                 if(value.Count == 3)
-                this._sac = value;
+                _sac = value;
+            }
+        }
+
+        // Actif est le pokémon en cours d'utilisation dans le combat
+        private Pokemon _actif;
+        public Pokemon Actif
+        {
+            get
+            {
+                return _actif;
+            }
+            set
+            {
+                foreach (Pokemon p in Sac)
+                    if (value == p)
+                        _actif = value;
             }
         }
 
@@ -37,12 +54,17 @@ namespace PokeDojo_GGMM
             else
             {
                 _sac = sac;
-                nom = Nom;
+                Nom = nom;
             }
 
         }
 
         //!! Quand on aura une BDD de pokémons il faudra que ce constructeur tire des Pokemons aléatoirement.
         public Joueur() : this("Joueur",new List<Pokemon>()) { }
+
+        public override string ToString()
+        {
+            return Nom;
+        }
     }
 }
