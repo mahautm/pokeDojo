@@ -9,7 +9,7 @@ namespace PokeDojo_GGMM
     class Joueur
     {
         public string Nom { get; set; }
-        public bool EstHumain { get; private set; }
+        public bool EstHumain { get; set; }
 
         //Un joueur peut avoir jusqu'à trois pokémon dans son sac.
         //!! Y a t'il une méthode où je n'ai pas besoin de la variable _sac et où je peux tout faire à la propriété?
