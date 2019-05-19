@@ -149,7 +149,7 @@ namespace PokeDojo_GGMM
             }
             Random R = new Random();
             j2.Actif = j2.Sac[R.Next(3)];
-            if (j1.EstHumain)
+            if (j1.EstHumain || j2.EstHumain)
             {
                 Console.WriteLine("Bienvenue dans ce tournoi :\n\n\t  *****\n {0} vs {1}\n\t  *****\n", j1.Nom, j2.Nom);
                 Console.WriteLine("Appuyez sur un touche, montez sur le Tatami, et choisissez un pokémon !");
@@ -208,13 +208,15 @@ namespace PokeDojo_GGMM
                 Console.WriteLine("C'est au tour de {0}, avec son pokémon {1} !", j1.Nom, j1.Actif.Nom);
                 if (j1.EstHumain)
                 {
-
+                    AfficherCombat(j1, j2);
                     Console.WriteLine("{0} Attend vos instruction ...", j1.Actif.Nom);
                     //Dans le cas où le joueur est humain, on appelle l'affichage du menu pour savoir quel action le joueur veut effectuer
                     choix = Menu();
                 }
                 //Par défaut un joueur non-humain attaque.
                 else choix = 0;
+                if (j2.EstHumain)
+                    AfficherCombat(j2, j1);
             }
             else choix = 0;
 
@@ -225,6 +227,9 @@ namespace PokeDojo_GGMM
                 j2.Actif.RecevoirDegats(j1.Actif);
                 if (j1.EstHumain || j2.EstHumain)
                 {
+                    Console.Clear();
+                    //Attention, cette ligne de code ne prend pas en compte l'option que deux joueurs humains s'affrontent.
+                    AfficherCombat(j1.EstHumain?j1:j2, j2.EstHumain ? j1 : j2);
                     Console.WriteLine("{0} Attaque {1}, qui perd {2} points de vie !", j1.Actif.Nom, j2.Actif.Nom, j2.Actif.HistoriqueDegats[j2.Actif.HistoriqueDegats.Count - 1]);
                     Console.ReadKey();
                 }
@@ -300,6 +305,7 @@ namespace PokeDojo_GGMM
 
         public static bool JouerPileOuFace()
         {
+             
             bool choix = true;
             ConsoleKey cki = ConsoleKey.UpArrow;
             Random R = new Random();
@@ -389,6 +395,25 @@ namespace PokeDojo_GGMM
             } while (cki != ConsoleKey.Enter && cki != ConsoleKey.Spacebar || j.Sac[choix].MarqueurDegats > j.Sac[choix].PV);
             Console.Clear();
             return j.Sac[choix];
+        }
+
+        public static void AfficherCombat(Joueur j1, Joueur j2)
+        {
+            // On affiche des indicateurs de dégats aux pokémons actifs.
+            for (int i = 0; i<5; i++)
+            {
+                if(j1.Actif.MarqueurDegats >= (5-i)* j1.Actif.PV / 5)
+                    Console.Write("|#|");
+                else
+                    Console.Write("| |");
+                if (j2.Actif.MarqueurDegats >= (5 - i) * j2.Actif.PV / 5)
+                    Console.Write("\t\t\t\t|#|");
+                else
+                    Console.Write("\t\t\t\t| |");
+                Console.WriteLine();
+            }
+            Console.WriteLine("{0} : {1}PV\t\t{2} : {3}PV\n", j1.Actif.Nom, j1.Actif.PV - j1.Actif.MarqueurDegats, j2.Actif.Nom, j2.Actif.PV - j2.Actif.MarqueurDegats);
+
         }
     }
 }
