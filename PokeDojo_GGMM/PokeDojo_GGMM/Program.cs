@@ -51,7 +51,7 @@ namespace PokeDojo_GGMM
 
             Console.ReadLine();
 
-            //ChoisirPokemon(j0);
+            //ChoisirPokemonHumain(j0);
 
             //!! 16 pokemons avec 16 * 2 évolutions
             //!! soit 2 par 'type'
@@ -84,7 +84,7 @@ namespace PokeDojo_GGMM
 
             List<string> types = new List<string>(new string[] { "Plante", "Feu", "Eau", "Glace", "Dragon", "Ténèbres", "Argent", "Roche" });
             j0.EstHumain = true;
-            Console.WriteLine(JouerCombat(j0, j1).Nom + " A GAGNE ! ");
+            Console.WriteLine(JouerCombat(j0, j3).Nom + " A GAGNE ! ");
     }
 
     public List<Pokemon> CreerPokemons(List<string> basique, List<string> alpha, List<string> beta, List<string> type)
@@ -118,6 +118,7 @@ namespace PokeDojo_GGMM
 
         public static void DeroulerPartie(Arene arene)
         {
+            //!! Permettre au joueur de choisir son nom (et ses Pokémons ?)
             //!! 1 : Faire apparaitre l'arbre des joueurs
             arene.AfficherArbreCompetition();
 
@@ -138,7 +139,12 @@ namespace PokeDojo_GGMM
         // S'il y a un joueur humain, c'est j1
         public static Joueur JouerCombat(Joueur j1, Joueur j2)
         {
-            // Si les joueurs 
+            Console.Clear();
+            //On affiche à gauche le nom du joueur et à droite celui de son adversaire
+            Console.WriteLine("Bienvenue dans ce tournoi :\n\n\t  *****\n {0} vs {1}\n\t  *****\nJouons à Pile ou Face pour déterminer qui commence.", j1.Nom, j2.Nom);
+            Console.ReadKey();
+
+            // Si le joueur perd au pile ou face, son adversaire commence, on inverse donc l'ordre.
             Joueur temp;
             if (!JouerPileOuFace())
             {
@@ -151,12 +157,16 @@ namespace PokeDojo_GGMM
             j2.Actif = j2.Sac[R.Next(3)];
             if (j1.EstHumain || j2.EstHumain)
             {
-                Console.WriteLine("Bienvenue dans ce tournoi :\n\n\t  *****\n {0} vs {1}\n\t  *****\n", j1.Nom, j2.Nom);
                 Console.WriteLine("Appuyez sur un touche, montez sur le Tatami, et choisissez un pokémon !");
                 Console.ReadKey();
-                j1.Actif = ChoisirPokemon(j1);
+
+                if (j1.EstHumain)
+                    j1.Actif = ChoisirPokemonHumain(j1);
+                else
+                    j2.Actif = ChoisirPokemonHumain(j2);
+
                 Console.WriteLine("{0} : {1} je te choisis !\n", j1.Nom, j1.Actif.Nom);
-                Console.WriteLine("{0} regarde dans son sac...\n\n{0} : {1} je te choisis !", j2.Nom, j2.Actif.Nom);
+                Console.WriteLine("{0} regarde dans son sac...\n{0} : {1} je te choisis !", j2.Nom, j2.Actif.Nom);
             }
             else
                 j1.Actif = j1.Sac[R.Next(3)];
@@ -189,7 +199,7 @@ namespace PokeDojo_GGMM
                     }
                     //Si le joueur est humain et qu'il n'a pas perdu, on le laisse choisir lui même le pokémon qu'il veut utiliser.
                     if (j2.EstHumain)
-                        ChoisirPokemon(j2);
+                        ChoisirPokemonHumain(j2);
 
                     //On inverse ensuite les joueurs pour alterner le joueur qui défend et celui qui attaque.
                     temp = j2;
@@ -241,7 +251,7 @@ namespace PokeDojo_GGMM
                 //!!Replis d'un pokémon
                 if (j1.EstHumain)
                 {
-                    j1.Actif = ChoisirPokemon(j1);
+                    j1.Actif = ChoisirPokemonHumain(j1);
                     Console.WriteLine("{0} : {1} je te choisis !", j1.Nom, j1.Actif.Nom);
                 }
             }
@@ -340,7 +350,7 @@ namespace PokeDojo_GGMM
             }
         }
 
-        public static Pokemon ChoisirPokemon(Joueur j)
+        public static Pokemon ChoisirPokemonHumain(Joueur j)
         {
             ConsoleKey cki;
             int choix = 0;
@@ -402,17 +412,17 @@ namespace PokeDojo_GGMM
             // On affiche des indicateurs de dégats aux pokémons actifs.
             for (int i = 0; i<5; i++)
             {
-                if(j1.Actif.MarqueurDegats >= (5-i)* j1.Actif.PV / 5)
+                if(j1.Actif.PV - j1.Actif.MarqueurDegats >= (5-i) / 5 * j1.Actif.PV)
                     Console.Write("|#|");
                 else
                     Console.Write("| |");
-                if (j2.Actif.MarqueurDegats >= (5 - i) * j2.Actif.PV / 5)
+                if (j2.Actif.PV - j2.Actif.MarqueurDegats >= (5 - i) / 5 * j2.Actif.PV)
                     Console.Write("\t\t\t\t|#|");
                 else
                     Console.Write("\t\t\t\t| |");
                 Console.WriteLine();
             }
-            Console.WriteLine("{0} : {1}PV\t\t{2} : {3}PV\n", j1.Actif.Nom, j1.Actif.PV - j1.Actif.MarqueurDegats, j2.Actif.Nom, j2.Actif.PV - j2.Actif.MarqueurDegats);
+            Console.WriteLine("{0} : {1}/{2}PV\t\t{3} : {4}/{5}PV\n", j1.Actif.Nom, j1.Actif.PV - j1.Actif.MarqueurDegats, j1.Actif.PV, j2.Actif.Nom, j2.Actif.PV - j2.Actif.MarqueurDegats, j2.Actif.PV);
 
         }
     }
