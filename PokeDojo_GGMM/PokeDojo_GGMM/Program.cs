@@ -53,8 +53,6 @@ namespace PokeDojo_GGMM
             }
 
             //Création des Listes pour les pokémons
-            //!! ceci sert au mode fonction de CreerPokemons(), mais surcharge le main avec des déclarations.
-            //!! on peut utiliser une méthode et déclarer les noms dedans (c'est sale mais économique en place)
             List<string> basique = new List<string> {
                 "TrukiPik",    "ShozaFeuil",
                 "TrukiBrul",   "TrukaMèsh",
@@ -79,10 +77,8 @@ namespace PokeDojo_GGMM
             {
                 "Plante", "Feu", "Eau", "Glace", "Dragon", "Ténèbres", "Argent", "Roche"
             };
-            //!! List<Pokemon> PokeList = CreerPokemons(basique, alpha, beta, types);
-            //!! 
 
-            List<Pokemon> PokeList = CreerPokemons();
+            List<Pokemon> PokeList = CreerPokemons(basique,alpha,beta,types);
 
             foreach (Pokemon poke in PokeList)
             {
@@ -104,85 +100,53 @@ namespace PokeDojo_GGMM
 
             List<Joueur> dresseurs = new List<Joueur>();
 
+            Random random = new Random();
+
             foreach (string dresseur in nomsDresseurs)
             {
-                Console.WriteLine("\n\n" + dresseur);
-                List<int> indexPokemons = GenererNint(3,0,47);
+                //Console.WriteLine("\n\n" + dresseur);
+                
+                List<int> indexPokemons = GenererNint(3,0,16,random);
+                /*
                 foreach (int index in indexPokemons)
                     Console.Write(" " + index);
+*/
 
                 List<Pokemon> pokemons = new List<Pokemon>();
                 foreach (int index in indexPokemons)
                 {
-                    pokemons.Add(PokeList[index]);
-                    //Console.Write("\t" + PokeList[index]);
+                    pokemons.Add(PokeList[index*3]);
                 }
                 dresseurs.Add(new Joueur(dresseur, pokemons));
             }
 
-            //foreach (Joueur dresseur in dresseurs)
-                //Console.WriteLine(dresseur);
-            
+            Console.WriteLine("\n\nVoici les dresseurs !!!");
+            foreach (Joueur dresseur in dresseurs)
+                Console.WriteLine(dresseur);
+
+            List<int> indexTest = GenererNint(10, 0, 16, random);
+
+            Console.WriteLine("\n\nEvolution !!!");
+            foreach (int index in indexTest)
+            {
+                Console.WriteLine(EvoluerPokemon(PokeList[index], PokeList).ToString(true) + "\n");
+            }
+
+            AlterationEtatPA alter = new AlterationEtatPA(3, true, -30);
+            AlterationEtatPA alter2 = new AlterationEtatPA(3, false, 30);
+            CapaciteSpeciale test = new CapaciteSpeciale(PokeList[1].Nom, types[PokeList[1].TypeElementaire], new List<AlterationEtat> { alter,alter2 });
+
+            Console.WriteLine(test);
+
+            Console.ReadLine();
+
+            //AlterationEtatPA test = new AlterationEtatPA("test", 3, true, 30);
         }
 
         //!!=========
         //FIN DU MAIN
         //!!=========
-
-        //Creation de Pokemons en mode méthode 
-        public static List<Pokemon> CreerPokemons()
-        {
-            //!! Possibilité de faire juste une méthode en créant les listes ici
-            List<string> basique = new List<string> {
-                "TrukiPik",    "ShozaFeuil",
-                "TrukiBrul",   "TrukaMèsh",
-                "TrukiNaj",    "TrukaBull",
-                "TrukiCaï",    "ShozaRtik",
-                "TrukiVol",    "TrukaDézèl",
-                "TrukiCrain",  "TrukaOtik",
-                "TrukiBrill",  "TrukaVide",
-                "TrukiKrak",   "TrukaLcair"
-            };
-            List<string> alpha = new List<string>
-            {
-                "Mini", "Riqui", "Piti", "Fifi",
-                "Loli", "Kawai", "Shipi", "Mimi"
-            };
-            List<string> beta = new List<string>
-            {
-                "Mega", "Peta", "Supra", "Masta",
-                "Tera", "Hypra", "Giga", "Ultra"
-            };
-            List<string> types = new List<string>
-            {
-                "Plante", "Feu", "Eau", "Glace", "Dragon", "Ténèbres", "Argent", "Roche"
-            };
-            //!!
-
-
-            List<Pokemon> ListePokemons = new List<Pokemon>();
-
-            int count = 0;
-            int indexType = 0;
-            Random random = new Random();
-
-            foreach (string basik in basique)
-            {
-                if (count % 2 == 0 && count != 0)
-                    indexType++;
-
-                ListePokemons.Add(new Pokemon(alpha[random.Next(8)] + basik, random.Next(50, 75), random.Next(15, 25), types[indexType][0]));
-
-                ListePokemons.Add(new Pokemon(basik, random.Next(100, 150), random.Next(35, 55), types[indexType][0]));
-
-                ListePokemons.Add(new Pokemon(beta[random.Next(8)] + basik, random.Next(200, 250), random.Next(45, 65), types[indexType][0]));
-               
-                count++;
-            }
-
-            return ListePokemons;
-        }
-
+        
         //Creation de Pokemons en mode fonction
         public static List<Pokemon> CreerPokemons(List<string> basique, List<string> alpha, List<string> beta, List<string> types)
         {
@@ -209,12 +173,27 @@ namespace PokeDojo_GGMM
             return ListePokemons;
         }
 
+        public static Pokemon EvoluerPokemon(Pokemon pokemon, List<Pokemon> ListePokemons)
+        {
+            if (ListePokemons.IndexOf(pokemon) % 3 != 2)
+            {
+                Console.WriteLine("L'évolution de " + pokemon + " en " + ListePokemons[ListePokemons.IndexOf(pokemon) + 1] + " est un succès.");
+                return (ListePokemons[ListePokemons.IndexOf(pokemon) + 1]);
+            }
+            else
+            {
+                Console.WriteLine("Impossible de faire évoluer " + pokemon + " : ce pokémon est déjà très badass.");
+                return pokemon;
+            }
+                
+        }
+
+         
 
         //GENERE N INT ALEATOIRES
-        public static List<int> GenererNint(int N, int min, int max)
+        public static List<int> GenererNint(int N, int min, int max, Random random)
         {
             List<int> entiers = new List<int> { };
-            Random random = new Random();
             int valeur;
 
             while (entiers.Count() != N)
