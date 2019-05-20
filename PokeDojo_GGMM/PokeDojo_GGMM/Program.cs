@@ -97,6 +97,7 @@ namespace PokeDojo_GGMM
                 "Galusha ", "Crasha   ", "Exarsha  ", "TeleAsha ",
                 "Shosha  ", "Moksha   ", "Geisha   ", "MilkShaha"
             };
+            //ChoisirPokemonHumain(j0);
 
             List<Joueur> dresseurs = new List<Joueur>();
 
@@ -137,6 +138,10 @@ namespace PokeDojo_GGMM
             CapaciteSpeciale test = new CapaciteSpeciale(PokeList[1].Nom, types[PokeList[1].TypeElementaire], new List<AlterationEtat> { alter,alter2 });
 
             Console.WriteLine(test);
+            List<string> types = new List<string>(new string[] { "Plante", "Feu", "Eau", "Glace", "Dragon", "Ténèbres", "Argent", "Roche" });
+            j0.EstHumain = true;
+            Console.WriteLine(JouerCombat(j0, j3).Nom + " A GAGNE ! ");
+    }
 
             Console.ReadLine();
 
@@ -211,6 +216,7 @@ namespace PokeDojo_GGMM
 
         public static void DeroulerPartie(Arene arene)
         {
+            //!! Permettre au joueur de choisir son nom (et ses Pokémons ?)
             //!! 1 : Faire apparaitre l'arbre des joueurs
             arene.AfficherArbreCompetition();
 
@@ -231,96 +237,131 @@ namespace PokeDojo_GGMM
         // S'il y a un joueur humain, c'est j1
         public static Joueur JouerCombat(Joueur j1, Joueur j2)
         {
-            bool commencerJ1 = JouerPileOuFace();
+            Console.Clear();
+            //On affiche à gauche le nom du joueur et à droite celui de son adversaire
+            Console.WriteLine("Bienvenue dans ce tournoi :\n\n\t  *****\n {0} vs {1}\n\t  *****\nJouons à Pile ou Face pour déterminer qui commence.", j1.Nom, j2.Nom);
+            Console.ReadKey();
+
+            // Si le joueur perd au pile ou face, son adversaire commence, on inverse donc l'ordre.
+            Joueur temp;
+            if (!JouerPileOuFace())
+            {
+                temp = j2;
+                j2 = j1;
+                j1 = temp;
+
+            }
             Random R = new Random();
             j2.Actif = j2.Sac[R.Next(3)];
-            if (j1.EstHumain)
+            if (j1.EstHumain || j2.EstHumain)
             {
-                Console.WriteLine("Bienvenue dans ce tournoi : {0} vs {1}", j1.Nom, j2.Nom);
-                Console.WriteLine("Montez sur le Tatami, et choisissez votre premier pokémon !");
-                Console.WriteLine("\n\t\t--- Appuyer sur une touche pour monter sur le Tatami ---");
+                Console.WriteLine("Appuyez sur un touche, montez sur le Tatami, et choisissez un pokémon !");
                 Console.ReadKey();
-                j1.Actif = ChoisirPokemon(j1);
-                //Console.WriteLine("{0} : {1} je te choisis !",j1.Nom, p1.Nom);
-                //Console.WriteLine("{0} regarde dans son sac...\n{0} : {1} je te choisis !", j2.Nom, p2.Nom);
+
+                if (j1.EstHumain)
+                    j1.Actif = ChoisirPokemonHumain(j1);
+                else
+                    j2.Actif = ChoisirPokemonHumain(j2);
+
+                Console.WriteLine("{0} : {1} je te choisis !\n", j1.Nom, j1.Actif.Nom);
+                Console.WriteLine("{0} regarde dans son sac...\n{0} : {1} je te choisis !", j2.Nom, j2.Actif.Nom);
             }
             else
                 j1.Actif = j1.Sac[R.Next(3)];
 
-            List<Joueur> Dojo;
-
             bool pokeVivant = true;
-            while (pokeVivant)
+            
+            //On entre dans les tours de partie. On ne peut sortir de cette boucle que lorsqu'un joueur gagne, car un return interrompt la fonction et donc la boucle.
+            while (true)
             {
-                if (commencerJ1)
-                {
-                    pokeVivant = JouerTour(j1, j2);
-                }
+                //On joue un tour
+
+                pokeVivant = JouerTour(j1, j2);
+                //On verifie que le pokemon n'et pas mort pendant ce tours
                 if (!pokeVivant)
                 {
-                    //Si le pokémon actif est KO, on cherche dans le sac s'il reste des pokémons vivants
-                    foreach (Pokemon p in j2.Sac)
+                    //s'il est mort on regarde s'il reste un pokémon vivant dans le sac de son dresseur,
+
+
+                    foreach(Pokemon p in j2.Sac)
+                    {
                         if (p.MarqueurDegats < p.PV)
                             j2.Actif = p;
-                    if (j2.Actif.MarqueurDegats < j2.Actif.PV)
-                        // Si ce n'est pas le cas, c'est l'autre joueur qui a gagné.
+                    }
+
+                    //On regarde si le pokemon a pu être remplacé
+                    if(j2.Actif.MarqueurDegats > j2.Actif.PV)
+                    {
+                        //Si ce n'est pas le cas, l'autre joueur a gagné.
                         return j1;
-                }
-                else pokeVivant = JouerTour(j2, j1);
-                if (!pokeVivant)
-                {
-                    if (true) ;
-                }
+                    }
+                    //Si le joueur est humain et qu'il n'a pas perdu, on le laisse choisir lui même le pokémon qu'il veut utiliser.
+                    if (j2.EstHumain)
+                        ChoisirPokemonHumain(j2);
 
-                commencerJ1 = true;
+                    //On inverse ensuite les joueurs pour alterner le joueur qui défend et celui qui attaque.
+                    temp = j2;
+                    j2 = j1;
+                    j1 = temp;
+                }
             }
-
-
-            return j1;
         }
 
-        //deux participants, initiative  = 0 ou 1, désigne le joueur qui commence
         public static bool JouerTour(Joueur j1, Joueur j2)
         {
             Random R = new Random();
             int choix;
-            if (j1.EstHumain)
+            if (j1.EstHumain || j2.EstHumain)
             {
-
-                Console.WriteLine("{0} Attend vos instruction ...", j1.Actif.Nom);
-                choix = Menu();
+                Console.WriteLine("C'est au tour de {0}, avec son pokémon {1} !", j1.Nom, j1.Actif.Nom);
+                if (j1.EstHumain)
+                {
+                    AfficherCombat(j1, j2);
+                    Console.WriteLine("{0} Attend vos instruction ...", j1.Actif.Nom);
+                    //Dans le cas où le joueur est humain, on appelle l'affichage du menu pour savoir quel action le joueur veut effectuer
+                    choix = Menu();
+                }
+                //Par défaut un joueur non-humain attaque.
+                else choix = 0;
+                if (j2.EstHumain)
+                    AfficherCombat(j2, j1);
             }
-            else choix = 1;
-            if (choix == 1)
+            else choix = 0;
+
+            //Si le joueur n'est pas humain, on le fait obligatoirement choisir d'attaquer.
+            if (choix == 0)
             {
                 //!!Attaque
-
                 j2.Actif.RecevoirDegats(j1.Actif);
                 if (j1.EstHumain || j2.EstHumain)
                 {
-                    Console.WriteLine("{0} Attaque {1}, qui perd {2} points de vie !", j1.Actif.Nom, j2.Actif.Nom, j2.Actif.HistoriqueDegats[-1]);
+                    Console.Clear();
+                    //Attention, cette ligne de code ne prend pas en compte l'option que deux joueurs humains s'affrontent.
+                    AfficherCombat(j1.EstHumain?j1:j2, j2.EstHumain ? j1 : j2);
+                    Console.WriteLine("{0} Attaque {1}, qui perd {2} points de vie !", j1.Actif.Nom, j2.Actif.Nom, j2.Actif.HistoriqueDegats[j2.Actif.HistoriqueDegats.Count - 1]);
+                    Console.ReadKey();
                 }
                 if (j2.Actif.MarqueurDegats > j2.Actif.PV)
                     return false;
             }
-            else if (choix == 2)
+            else if (choix == 1)
             {
                 //!!Replis d'un pokémon
                 if (j1.EstHumain)
                 {
-                    ChoisirPokemon(j1);
+                    j1.Actif = ChoisirPokemonHumain(j1);
                     Console.WriteLine("{0} : {1} je te choisis !", j1.Nom, j1.Actif.Nom);
                 }
             }
-            else if (choix == 3)
+            else if (choix == 2)
             {
-                //!!Soin
+                //!!Capacité spéciale
                 if (j1.EstHumain)
                 {
                     Console.WriteLine("WIP : Cette option n'est pas encore disponible");
                 }
             }
-            else if (choix == 4)
+            else if (choix == 3)
             {
                 //!!Fuite
                 if (j1.EstHumain)
@@ -341,13 +382,13 @@ namespace PokeDojo_GGMM
             {
                 Console.Clear();
                 if (choix == 0)
-                    Console.WriteLine(">>\tAttaque\t\t\tReplis\n\tSoin\t\t\tFuite");
+                    Console.WriteLine(">>\tAttaque\t\t\t\tReplis\n\tCapacité spéciale\t\tFuite");
                 else if (choix == 1)
-                    Console.WriteLine("\tAttaque\t\t>>\tReplis\n\tSoin\t\t\tFuite");
+                    Console.WriteLine("\tAttaque\t\t\t>>\tReplis\n\tCapacité spéciale\t\tFuite");
                 else if (choix == 2)
-                    Console.WriteLine("\tAttaque\t\t\tReplis\n>>\tSoin\t\t\tFuite");
+                    Console.WriteLine("\tAttaque\t\t\t\tReplis\n>>\tCapacité spéciale\t\tFuite");
                 else if (choix == 3)
-                    Console.WriteLine("\tAttaque\t\t\tReplis\n\tSoin\t\t>>\tFuite");
+                    Console.WriteLine("\tAttaque\t\t\t\tReplis\n\tCapacité spéciale\t>>\tFuite");
 
                 //Attente puis enregistrement d'une entrée utilisateur
                 cki = Console.ReadKey().Key;
@@ -372,6 +413,7 @@ namespace PokeDojo_GGMM
 
         public static bool JouerPileOuFace()
         {
+             
             bool choix = true;
             ConsoleKey cki = ConsoleKey.UpArrow;
             Random R = new Random();
@@ -406,13 +448,9 @@ namespace PokeDojo_GGMM
             }
         }
 
-        public static Pokemon ChoisirPokemon(Joueur j)
+        public static Pokemon ChoisirPokemonHumain(Joueur j)
         {
-            //!! Attention il faut empêcher de choisir les pokémons KO
-            Console.Clear();
-
-
-            ConsoleKey cki = ConsoleKey.UpArrow;
+            ConsoleKey cki;
             int choix = 0;
             do
             {
@@ -428,10 +466,26 @@ namespace PokeDojo_GGMM
                     }
 
                     Console.Write("\t{0} \t: {1} PV, \t{2} PA", j.Sac[i].Nom, j.Sac[i].PV - j.Sac[i].MarqueurDegats, j.Sac[i].PA);
-                    if (j.Sac[choix].MarqueurDegats < j.Sac[choix].PV)
+                    if (j.Sac[i].MarqueurDegats > j.Sac[i].PV)
+                    {
                         Console.Write("\tKO");
+                    }
                     Console.WriteLine();
 
+                }
+                //Expliquer à l'utilisateur pourquoi il ne peut pas sélectionner son Pokémon mort.
+                if (j.Sac[choix].MarqueurDegats > j.Sac[choix].PV)
+                {
+                    Console.ForegroundColor = ConsoleColor.DarkRed;
+                    Console.WriteLine("\nVous ne pouvez pas choisir {0}, il est KO :(", j.Sac[choix].Nom);
+                    Console.ResetColor();
+
+                }
+                else
+                {
+                    Console.ForegroundColor = ConsoleColor.DarkGreen;
+                    Console.WriteLine("\n{0} est prêt, et a très envie d'aider au combat !", j.Sac[choix].Nom);
+                    Console.ResetColor();
                 }
                 //Attente puis enregistrement d'une entrée utilisateur
                 cki = Console.ReadKey().Key;
@@ -446,9 +500,28 @@ namespace PokeDojo_GGMM
                     choix = 3 + choix;
 
 
-            } while (cki != ConsoleKey.Enter && cki != ConsoleKey.Spacebar && j.Sac[choix].MarqueurDegats < j.Sac[choix].PV);
+            } while (cki != ConsoleKey.Enter && cki != ConsoleKey.Spacebar || j.Sac[choix].MarqueurDegats > j.Sac[choix].PV);
             Console.Clear();
             return j.Sac[choix];
+        }
+
+        public static void AfficherCombat(Joueur j1, Joueur j2)
+        {
+            // On affiche des indicateurs de dégats aux pokémons actifs.
+            for (int i = 0; i<5; i++)
+            {
+                if(j1.Actif.PV - j1.Actif.MarqueurDegats >= (5-i) / 5 * j1.Actif.PV)
+                    Console.Write("|#|");
+                else
+                    Console.Write("| |");
+                if (j2.Actif.PV - j2.Actif.MarqueurDegats >= (5 - i) / 5 * j2.Actif.PV)
+                    Console.Write("\t\t\t\t|#|");
+                else
+                    Console.Write("\t\t\t\t| |");
+                Console.WriteLine();
+            }
+            Console.WriteLine("{0} : {1}/{2}PV\t\t{3} : {4}/{5}PV\n", j1.Actif.Nom, j1.Actif.PV - j1.Actif.MarqueurDegats, j1.Actif.PV, j2.Actif.Nom, j2.Actif.PV - j2.Actif.MarqueurDegats, j2.Actif.PV);
+
         }
     }
 }
