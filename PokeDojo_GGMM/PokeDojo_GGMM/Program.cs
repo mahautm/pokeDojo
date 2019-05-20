@@ -161,15 +161,19 @@ namespace PokeDojo_GGMM
                 Console.ReadKey();
 
                 if (j1.EstHumain)
+                {
                     j1.Actif = ChoisirPokemonHumain(j1);
+                    j2.Actif = j1.Sac[R.Next(3)];
+                }
                 else
+                {
+                    j1.Actif = j1.Sac[R.Next(3)];
                     j2.Actif = ChoisirPokemonHumain(j2);
+                }
 
                 Console.WriteLine("{0} : {1} je te choisis !\n", j1.Nom, j1.Actif.Nom);
                 Console.WriteLine("{0} regarde dans son sac...\n{0} : {1} je te choisis !", j2.Nom, j2.Actif.Nom);
             }
-            else
-                j1.Actif = j1.Sac[R.Next(3)];
 
             bool pokeVivant = true;
             
@@ -184,8 +188,9 @@ namespace PokeDojo_GGMM
                 {
                     //s'il est mort on regarde s'il reste un pokémon vivant dans le sac de son dresseur,
 
+                    Console.Write("{0} est KO...",j1.Actif.Nom);
 
-                    foreach(Pokemon p in j2.Sac)
+                    foreach (Pokemon p in j2.Sac)
                     {
                         if (p.MarqueurDegats < p.PV)
                             j2.Actif = p;
@@ -200,12 +205,13 @@ namespace PokeDojo_GGMM
                     //Si le joueur est humain et qu'il n'a pas perdu, on le laisse choisir lui même le pokémon qu'il veut utiliser.
                     if (j2.EstHumain)
                         ChoisirPokemonHumain(j2);
-
+                    Console.WriteLine(" {0} Le remplace avec {1} !", j2.Nom, j2.Actif.Nom);
+                    Console.ReadKey();
                     //On inverse ensuite les joueurs pour alterner le joueur qui défend et celui qui attaque.
-                    temp = j2;
-                    j2 = j1;
-                    j1 = temp;
                 }
+                temp = j2;
+                j2 = j1;
+                j1 = temp;
             }
         }
 
@@ -412,13 +418,13 @@ namespace PokeDojo_GGMM
             // On affiche des indicateurs de dégats aux pokémons actifs.
             for (int i = 0; i<5; i++)
             {
-                if(j1.Actif.PV - j1.Actif.MarqueurDegats >= (5-i) / 5 * j1.Actif.PV)
+                if(j1.Actif.PV - j1.Actif.MarqueurDegats >= (5.0-i) / 5.0 * j1.Actif.PV)
                     Console.Write("|#|");
                 else
                     Console.Write("| |");
-                if (j2.Actif.PV - j2.Actif.MarqueurDegats >= (5 - i) / 5 * j2.Actif.PV)
+                if (j2.Actif.PV - j2.Actif.MarqueurDegats >= (5.0 - i) / 5.0 * j2.Actif.PV)
                     Console.Write("\t\t\t\t|#|");
-                else
+                else 
                     Console.Write("\t\t\t\t| |");
                 Console.WriteLine();
             }
