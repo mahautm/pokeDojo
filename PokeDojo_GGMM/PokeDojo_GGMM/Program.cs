@@ -126,7 +126,7 @@ namespace PokeDojo_GGMM
             string nom = Console.ReadLine();
             // Permettre au joueur de Choisir ses pokémons :
             //!!WIP
-
+            List<Pokemon> sac = new List<Pokemon>();
             Joueur j1 = new Joueur(nom, sac);
 
             //!! 1 : Faire apparaitre l'arbre des joueurs
