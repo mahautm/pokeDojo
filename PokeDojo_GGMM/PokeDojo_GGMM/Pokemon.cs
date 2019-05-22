@@ -10,6 +10,7 @@ namespace PokeDojo_GGMM
     {
         //!! verifier que la syntaxe est bonne
         public readonly List<string> _types = new List<string> { "Plante", "Feu", "Eau", "Glace", "Dragon", "Ténèbres", "Argent", "Roche"  };
+
         //Caractéristiques initiales du pokémon.
         //!!Les niveau d'autorisation de lecture et d'écriture sont encore sujets à évoluer.
         public string Nom { get; protected set; }
@@ -162,12 +163,19 @@ namespace PokeDojo_GGMM
             //si le pouvoir est réflexif, il affecte le pokémon
             if (CapacitesSpeciales[capacite]._alterations[0]._reflexif)
             {
+                //!! Console.WriteLine(Nom + " lance " + CapacitesSpeciales[capacite] + " et bénéficie de : " + CapacitesSpeciales[capacite]._alterations[0]);
+                Console.WriteLine("{0}Nom lance {1} et bénéficie de : {2}", Nom,CapacitesSpeciales[capacite],CapacitesSpeciales[capacite]._alterations[0]);
                 AlterationsEtat.Add(CapacitesSpeciales[capacite]._alterations[0]);
             }
                 
             //sinon il affecte le pokémon adverse
             else
+            {
+                //!! Console.WriteLine(Nom + " lance " + CapacitesSpeciales[capacite] + " sur " + ennemi + " qui est affecté par " + CapacitesSpeciales[capacite]._alterations[0]);
+                Console.WriteLine("{0}Nom lance {1} sur {2} qui est affecté par : {3}", Nom, ennemi.Nom, CapacitesSpeciales[capacite], CapacitesSpeciales[capacite]._alterations[0]);
                 ennemi.AlterationsEtat.Add(CapacitesSpeciales[capacite]._alterations[0]);
+            }
+            
         }
 
         //GENERE N INT ALEATOIRES

@@ -14,45 +14,9 @@ namespace PokeDojo_GGMM
             //!! https://bulbapedia.bulbagarden.net/wiki/List_of_Pok%C3%A9mon_by_base_stats_(Generation_VII-present)
             //!! https://www.pokebip.com/pokedex/4eme_generation_pokeliste_liste_des_pokemon.html
 
-            //!! Old liste de pokémons
-            {
-                /*
-                Pokemon p0 = new Pokemon("Bulbizarre", 45, 49, 'P');
-                Pokemon p1 = new Pokemon("Salamèche", 39, 52, 'F');
-                Pokemon p2 = new Pokemon("Carapuce", 44, 48, 'E');
-                Pokemon p3 = new Pokemon("Givrali", 65, 60, 'G');
+            Random random = new Random();
 
-                Pokemon p4 = new Pokemon("Minidraco", 41, 64, 'D');
-                Pokemon p5 = new Pokemon("Farfuret", 55, 95, 'T');
-                Pokemon p6 = new Pokemon("Foretress", 75, 90, 'A');
-                Pokemon p7 = new Pokemon("Embrylex", 50, 64, 'R');
-                */
-            }
-            //!! Old liste des joueurs
-            {
-                /*
-            Joueur j0 = new Joueur("Guiguite38", new List<Pokemon> { p0, p1, p2 });
-            Joueur j1 = new Joueur("Matmut14", new List<Pokemon> { p1, p2, p3 });
-            Joueur j2 = new Joueur("Zgoogo33", new List<Pokemon> { p2, p3, p4 });
-            Joueur j3 = new Joueur("BenDlaRochèl", new List<Pokemon> { p3, p4, p5 });
-
-            Joueur j4 = new Joueur("CocoNono", new List<Pokemon> { p3, p4, p5 });
-            Joueur j5 = new Joueur("MarTintin", new List<Pokemon> { p3, p4, p5 });
-            Joueur j6 = new Joueur("GogoLeGoth", new List<Pokemon> { p3, p4, p5 });
-            Joueur j7 = new Joueur("Marv-1 LeHun", new List<Pokemon> { p3, p4, p5 });
-            */
-            }
-            //!! Old Arene
-            {
-                /*
-                Arene arene = new Arene(new List<Joueur> { j0, j1, j2, j3, j4, j5, j6, j7 });
-                arene.Arbre.Add(new List<Joueur> { j1, j2, j5, j7 });
-                arene.Arbre.Add(new List<Joueur> { j1, j7 });
-                arene.Arbre.Add(new List<Joueur> { j7 });
-                */
-            }
-
-            //Création des Listes pour les pokémons
+            //Création des Listes pour les pokémons : Evolutions et types élémentaires
             List<string> basique = new List<string> {
                 "TrukiPik",    "ShozaFeuil",
                 "TrukiBrul",   "TrukaMèsh",
@@ -78,21 +42,25 @@ namespace PokeDojo_GGMM
                 "Plante", "Feu", "Eau", "Glace", "Dragon", "Ténèbres", "Argent", "Roche"
             };
 
+            //Création de la liste des 18 pokémons et de leurs 32 évolutions
             List<Pokemon> PokeList = CreerPokemons(basique,alpha,beta,types);
-            //arene.Arbre.Add(new List<Joueur> { j1, j2, j5, j7 });
-            //arene.Arbre.Add(new List<Joueur> { j1, j7 });
-            //arene.Arbre.Add(new List<Joueur> { j7 });
 
-            foreach (Pokemon poke in PokeList)
+            //!! Affichage
             {
-                if (PokeList.IndexOf(poke) % 6 == 0)
-                    Console.WriteLine("\n\nElement " + types[poke.TypeElementaire]);
+                /*
+                foreach (Pokemon poke in PokeList)
+                {
+                    if (PokeList.IndexOf(poke) % 6 == 0)
+                        Console.WriteLine("\n\nElement " + types[poke.TypeElementaire]);
 
-                if (PokeList.IndexOf(poke) % 6 == 3)
-                    Console.WriteLine();
-                Console.Write(poke + "\t\t");
+                    if (PokeList.IndexOf(poke) % 6 == 3)
+                        Console.WriteLine();
+                    Console.Write(poke + "\t\t");
+                }
+                */
             }
 
+            // Noms des Joueurs
             List<string> nomsDresseurs = new List<string>
             {
                 "Sasha   ", "Pasha    ", "Datsha   ", "Chisha   ",
@@ -100,31 +68,18 @@ namespace PokeDojo_GGMM
                 "Galusha ", "Crasha   ", "Exarsha  ", "TeleAsha ",
                 "Shosha  ", "Moksha   ", "Geisha   ", "MilkShaha"
             };
-            //ChoisirPokemonHumain(j0);
 
-            List<Joueur> dresseurs = new List<Joueur>();
-
-            Random random = new Random();
-
-            // création des 16 Joueurs
-            foreach (string dresseur in nomsDresseurs)
-            {                
-                List<int> indexPokemons = GenererNint(3,0,16,random);
-
-                List<Pokemon> pokemons = new List<Pokemon>();
-                foreach (int index in indexPokemons)
-                {
-                    pokemons.Add(PokeList[index*3]);
-                }
-                dresseurs.Add(new Joueur(dresseur, pokemons));
-            }
-
+            List<Joueur> dresseurs = CreerJoueurs(nomsDresseurs, PokeList, random);
+            
             Arene arene = new Arene(dresseurs);
 
+            //!! tests Guillaume
+            {
+            /*
             Console.WriteLine("\n\nVoici les dresseurs !!!");
             foreach (Joueur dresseur in dresseurs)
                 Console.WriteLine(dresseur);
-
+            
             List<int> indexTest = GenererNint(10, 0, 16, random);
 
             Console.WriteLine("\n\nEvolution !!!");
@@ -138,22 +93,16 @@ namespace PokeDojo_GGMM
             CapaciteSpeciale test = new CapaciteSpeciale(PokeList[1].Nom, types[PokeList[1].TypeElementaire], new List<AlterationEtat> { alter,alter2 });
 
             Console.WriteLine(test);
-            //List<string> types = new List<string>(new string[] { "Plante", "Feu", "Eau", "Glace", "Dragon", "Ténèbres", "Argent", "Roche" });
-
-            //j0.EstHumain = true;
-            //Console.WriteLine(JouerCombat(j0, j3).Nom + " A GAGNE ! ");
-    
-
+            */
+            }
             Console.ReadLine();
-
-            //AlterationEtatPA test = new AlterationEtatPA("test", 3, true, 30);
         }
 
         //!!=========
         //FIN DU MAIN
         //!!=========
         
-        //Creation de Pokemons en mode fonction
+        //Creation de Pokemons
         public static List<Pokemon> CreerPokemons(List<string> basique, List<string> alpha, List<string> beta, List<string> types)
         {
             List<Pokemon> ListePokemons = new List<Pokemon>();
@@ -178,6 +127,29 @@ namespace PokeDojo_GGMM
 
             return ListePokemons;
         }
+
+        //Creation de Dresseurs
+        public static List<Joueur> CreerJoueurs(List<string> nomsDresseurs, List<Pokemon> pokeList, Random random)
+        {
+            //Liste des dresseurs
+            List<Joueur> dresseurs = new List<Joueur>();
+
+            // création des 16 Joueurs
+            foreach (string dresseur in nomsDresseurs)
+            {
+                List<int> indexPokemons = GenererNint(3, 0, 16, random);
+
+                List<Pokemon> pokemons = new List<Pokemon>();
+                foreach (int index in indexPokemons)
+                {
+                    pokemons.Add(pokeList[index * 3]);
+                }
+                dresseurs.Add(new Joueur(dresseur, pokemons));
+            }
+
+            return dresseurs;
+        }
+
 
         public static Pokemon EvoluerPokemon(Pokemon pokemon, List<Pokemon> ListePokemons)
         {
