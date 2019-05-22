@@ -321,7 +321,7 @@ namespace PokeDojo_GGMM
                     AfficherCombat(j1, j2);
                     Console.WriteLine("{0} Attend vos instruction ...", j1.Actif.Nom);
                     //Dans le cas où le joueur est humain, on appelle l'affichage du menu pour savoir quel action le joueur veut effectuer
-                    choix = Menu();
+                    choix = Menu(j1);
                 }
                 //Par défaut un joueur non-humain attaque.
                 else choix = 0;
@@ -355,31 +355,6 @@ namespace PokeDojo_GGMM
                     Console.WriteLine("{0} : {1} je te choisis !", j1.Nom, j1.Actif.Nom);
                 }
             }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
             else if (choix == 2)
             {
                 //!!Capacité spéciale
@@ -405,20 +380,6 @@ namespace PokeDojo_GGMM
                 }
             }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
             else if (choix == 3)
             {
                 //!!Fuite
@@ -430,7 +391,7 @@ namespace PokeDojo_GGMM
             return true;
         }
 
-        public static int Menu()
+        public static int Menu(Joueur j1)
         {
             // Menu de choix : choisir une action au cours d'une partie à l'aide des flèches du clavier,
             //renvoie une valeur entre 1 et 4 en fonction du choix utilisateur
@@ -465,7 +426,7 @@ namespace PokeDojo_GGMM
                     choix = 4 + choix;
 
 
-            } while (cki != ConsoleKey.Enter && cki != ConsoleKey.Spacebar);
+            } while (cki != ConsoleKey.Enter && cki != ConsoleKey.Spacebar &&!(choix == 2 && j1.Actif.CapacitesSpeciales.Count == 0));
             return choix;
         }
 
