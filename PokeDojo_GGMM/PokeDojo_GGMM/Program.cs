@@ -138,10 +138,11 @@ namespace PokeDojo_GGMM
             CapaciteSpeciale test = new CapaciteSpeciale(PokeList[1].Nom, types[PokeList[1].TypeElementaire], new List<AlterationEtat> { alter,alter2 });
 
             Console.WriteLine(test);
-            List<string> types = new List<string>(new string[] { "Plante", "Feu", "Eau", "Glace", "Dragon", "Ténèbres", "Argent", "Roche" });
-            j0.EstHumain = true;
-            Console.WriteLine(JouerCombat(j0, j3).Nom + " A GAGNE ! ");
-    }
+            //List<string> types = new List<string>(new string[] { "Plante", "Feu", "Eau", "Glace", "Dragon", "Ténèbres", "Argent", "Roche" });
+
+            //j0.EstHumain = true;
+            //Console.WriteLine(JouerCombat(j0, j3).Nom + " A GAGNE ! ");
+    
 
             Console.ReadLine();
 

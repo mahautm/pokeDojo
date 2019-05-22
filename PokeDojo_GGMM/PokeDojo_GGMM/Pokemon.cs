@@ -79,19 +79,54 @@ namespace PokeDojo_GGMM
 
         public bool RecevoirDegats(Pokemon ennemi)
         {
-            Random R = new Random();
-            int Degats = (int)Math.Ceiling((1 + (R.Next(-20, 20) / (double)100)) * ennemi.PA);
-            if (ennemi.TypeElementaire == TypeVulnerable)
+            // gestion puissance d'attaque
+            int forceAttaque = 100;
+            foreach(AlterationEtatPA alteration in ennemi.AlterationsEtat)
             {
-                MarqueurDegats += 2*Degats;
-                HistoriqueDegats.Add(2*Degats);
-            }
-            else
-            {
-                MarqueurDegats += Degats;
-                HistoriqueDegats.Add(Degats);
+                if (alteration.Duree == 0)
+                    ennemi.AlterationsEtat.Remove(alteration);
+                else
+                    alteration.Duree -= 1;
+
+                forceAttaque += alteration.Modificateur;
             }
 
+            Random R = new Random();
+            int Degats = (int)Math.Ceiling(
+                (forceAttaque + R.Next(-20,20)) / (double)100 * ennemi.PA
+                );
+
+            // gestion bouclier
+            bool attaqueAbsorbée = false;
+            foreach (AlterationEtatBouclier shield in ennemi.AlterationsEtat)
+            {
+                if (!attaqueAbsorbée)
+                {
+                    if (shield.Duree == 0 || shield.PVBouclier < 0)
+                        AlterationsEtat.Remove(shield);
+                    else
+                        shield.Duree -= 1;
+
+                    shield.PVBouclier -= Degats;
+                    Degats -= shield.PVBouclier;
+                }
+                if (Degats <= 0) attaqueAbsorbée = !attaqueAbsorbée;
+            }
+
+            // application des dégâts
+            if (Degats > 0)
+            {
+                if (ennemi.TypeElementaire == TypeVulnerable)
+                {
+                    MarqueurDegats += 2 * Degats;
+                    HistoriqueDegats.Add(2 * Degats);
+                }
+                else
+                {
+                    MarqueurDegats += Degats;
+                    HistoriqueDegats.Add(Degats);
+                }
+            }
             if (MarqueurDegats >= PV)
                 return true;
             return false;
