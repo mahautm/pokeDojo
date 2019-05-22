@@ -370,15 +370,70 @@ namespace PokeDojo_GGMM
                     Console.WriteLine("{0} : {1} je te choisis !", j1.Nom, j1.Actif.Nom);
                 }
             }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
             else if (choix == 2)
             {
                 //!!Capacité spéciale
                 if (j1.EstHumain)
                 {
-                    //!! j1.Actif
+                    ConsoleKey cki;
+                    int selection = 0;
+                    do
+                    {
+                        Console.Clear();
+                        Console.WriteLine("Quelle Capacité spéciale voulez-vous utiliser ?");
+                        for (int i = 0; i<j1.Actif.CapacitesSpeciales.Count;i++)
+                        {
+                            if(selection == i)
+                                Console.Write(">>");
+                            Console.WriteLine("\t{0}, {1}", j1.Actif.CapacitesSpeciales[i]._nom, j1.Actif.CapacitesSpeciales[i]._alterations[0]);
+                        }
+                        cki = Console.ReadKey().Key;
+                    } while (cki != ConsoleKey.Enter && cki != ConsoleKey.Spacebar);
+                    Console.WriteLine("{0} Utilise {1}... Incroyable !");
+                    j1.Actif.LancerCapacite(j2.Actif, selection);
                     Console.WriteLine("WIP : Cette option n'est pas encore disponible");
                 }
             }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
             else if (choix == 3)
             {
                 //!!Fuite
