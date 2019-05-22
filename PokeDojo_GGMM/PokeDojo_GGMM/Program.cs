@@ -96,6 +96,8 @@ namespace PokeDojo_GGMM
             */
             }
             Console.ReadLine();
+            dresseurs[0].EstHumain = true;
+            JouerCombat(dresseurs[0], dresseurs[1]);
         }
 
         //!!=========
@@ -123,6 +125,12 @@ namespace PokeDojo_GGMM
                 ListePokemons.Add(new Pokemon(beta[random.Next(beta.Count)] + basik, random.Next(200, 250), random.Next(45, 65), types[indexType][0]));
 
                 count++;
+            }
+
+            foreach(Pokemon pokemon in ListePokemons)
+            {
+                if (pokemon.Evolution == 0)
+                    pokemon.NouvelleCapacite();
             }
 
             return ListePokemons;
@@ -156,6 +164,11 @@ namespace PokeDojo_GGMM
             if (ListePokemons.IndexOf(pokemon) % 3 != 2)
             {
                 Console.WriteLine("L'évolution de " + pokemon + " en " + ListePokemons[ListePokemons.IndexOf(pokemon) + 1] + " est un succès.");
+
+                //Quand il évolue, le pokémon gagne 2 capacités
+                pokemon.NouvelleCapacite();
+                pokemon.NouvelleCapacite();
+
                 return (ListePokemons[ListePokemons.IndexOf(pokemon) + 1]);
             }
             else
