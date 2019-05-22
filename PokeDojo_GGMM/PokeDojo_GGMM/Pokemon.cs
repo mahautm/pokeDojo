@@ -25,13 +25,13 @@ namespace PokeDojo_GGMM
         public int TypeElementaire { get; set; }
         public int TypeVulnerable { get; set; }
 
-        public List<CapaciteSpeciale> CapacitesSpeciales { get; set; }
-        public List<AlterationEtat> AlterationsEtat { get; set; }
+        public List<CapaciteSpeciale> CapacitesSpeciales = new List<CapaciteSpeciale>();
+        public List<AlterationEtat> AlterationsEtat = new List<AlterationEtat>();
 
         //le niveau d'évolution de 0 à 2 du pokémon
         public int Evolution { get; set; }
 
-        private Random Random { get; set; }
+        private static Random Random = new Random();
 
 
         //Constructeur
@@ -82,14 +82,18 @@ namespace PokeDojo_GGMM
         {
             // gestion puissance d'attaque
             int forceAttaque = 100;
-            foreach(AlterationEtatPA alteration in ennemi.AlterationsEtat)
+            foreach(AlterationEtat alteration in ennemi.AlterationsEtat)
             {
-                if (alteration.Duree == 0)
-                    ennemi.AlterationsEtat.Remove(alteration);
-                else
-                    alteration.Duree -= 1;
+                if (alteration is AlterationEtatPA)
+                {
+                    AlterationEtatPA boost = (AlterationEtatPA)alteration;
+                    if (boost.Duree == 0)
+                        ennemi.AlterationsEtat.Remove(alteration);
+                    else
+                        alteration.Duree -= 1;
 
-                forceAttaque += alteration.Modificateur;
+                    forceAttaque += boost.Modificateur;
+                }
             }
 
             Random R = new Random();
@@ -97,25 +101,40 @@ namespace PokeDojo_GGMM
                 (forceAttaque + R.Next(-20,20)) / (double)100 * ennemi.PA
                 );
 
-            //!! cas possible où les dégâts sont tellement réduits qu'ils pourraient soigner l'ennemi (100%-150% -> -50% * PA infligé en dégâts , soit Dégâts < 0 !)
+            //!! cas où les dégâts sont tellement réduits qu'ils pourraient soigner l'ennemi (100%-150% -> -50% * PA infligé en dégâts , soit Dégâts < 0 !)
             if (Degats < 0) Degats = 0;
 
             // gestion bouclier
             bool attaqueAbsorbée = false;
-            foreach (AlterationEtatBouclier shield in ennemi.AlterationsEtat)
-            {
-                if (!attaqueAbsorbée)
-                {
-                    if (shield.Duree == 0 || shield.PVBouclier < 0)
-                        AlterationsEtat.Remove(shield);
-                    else
-                        shield.Duree -= 1;
 
-                    shield.PVBouclier -= Degats;
-                    Degats -= shield.PVBouclier;
+            foreach (AlterationEtat alteration in ennemi.AlterationsEtat)
+            {
+                if(alteration is AlterationEtatBouclier)
+                {
+                    AlterationEtatBouclier bouclier = (AlterationEtatBouclier)alteration;
+                    //AlterationEtatBouclier bouclier = new AlterationEtatBouclier(AlterationsEtat[indexAlteration].;
+                    if (!attaqueAbsorbée)
+                    {
+                        if (bouclier.Duree == 0 || bouclier.PVBouclier < 0)
+                            AlterationsEtat.Remove(bouclier);
+                        else
+                            alteration.Duree -= 1;
+
+                        bouclier.PVBouclier -= Degats;
+                        Degats -= bouclier.PVBouclier;
+
+                        if (Degats > bouclier.PVBouclier)
+                            Console.WriteLine("Le bouclier de {0} a été désintégré alors qu'il absorbait {1} points de dégâts.", ennemi.Nom,bouclier.PVBouclier);
+                        else
+                            Console.WriteLine("Le bouclier de {0} l'immunise en absorbant {1} points de dégâts.", ennemi.Nom,Degats);
+
+                    }
                 }
-                if (Degats <= 0) attaqueAbsorbée = !attaqueAbsorbée;
+
+                if (Degats <= 0) attaqueAbsorbée = true;
             }
+
+                       
 
             // application des dégâts
             if (Degats > 0)
@@ -143,7 +162,7 @@ namespace PokeDojo_GGMM
             if(typePouvoir == 0)
             {
                 //!! le poké gagne un shield de 2 tours absorbant jusqu'à [ 50*(3-Evolution) + PV / (2+Evolution) ] dégâts
-                CapacitesSpeciales.Add(new CapaciteSpeciale(Nom, _types[TypeElementaire], new List<AlterationEtat> { new AlterationEtatBouclier(2, true, 50*(3-Evolution) + PV/(2+Evolution)) }));
+                CapacitesSpeciales.Add(new CapaciteSpeciale(Nom, _types[TypeElementaire], new List<AlterationEtat> { new AlterationEtatBouclier(2, true, 20*(3-Evolution) + PV/(2+Evolution)) }));
             }
             else
             if (typePouvoir == 1)
@@ -165,7 +184,7 @@ namespace PokeDojo_GGMM
             {
                 //!! Console.WriteLine(Nom + " lance " + CapacitesSpeciales[capacite] + " et bénéficie de : " + CapacitesSpeciales[capacite]._alterations[0]);
                 Console.WriteLine("{0}Nom lance {1} et bénéficie de : {2}", Nom,CapacitesSpeciales[capacite],CapacitesSpeciales[capacite]._alterations[0]);
-                AlterationsEtat.Add(CapacitesSpeciales[capacite]._alterations[0]);
+                AlterationsEtat.Add(CapacitesSpeciales[capacite]._alterations[0]);                
             }
                 
             //sinon il affecte le pokémon adverse
@@ -175,7 +194,7 @@ namespace PokeDojo_GGMM
                 Console.WriteLine("{0}Nom lance {1} sur {2} qui est affecté par : {3}", Nom, ennemi.Nom, CapacitesSpeciales[capacite], CapacitesSpeciales[capacite]._alterations[0]);
                 ennemi.AlterationsEtat.Add(CapacitesSpeciales[capacite]._alterations[0]);
             }
-            
+            CapacitesSpeciales.Remove(CapacitesSpeciales[capacite]);
         }
 
         //GENERE N INT ALEATOIRES

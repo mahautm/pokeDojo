@@ -95,7 +95,7 @@ namespace PokeDojo_GGMM
             Console.WriteLine(test);
             */
             }
-            Console.ReadLine();
+            //Console.ReadLine();
             dresseurs[0].EstHumain = true;
             JouerCombat(dresseurs[0], dresseurs[1]);
         }
