@@ -19,10 +19,9 @@ namespace PokeDojo_GGMM
             }
             set
             {
-                //!! à modifier avec 16
-                if (value.Count == 8)
+                if (value.Count == 16)
                     _competiteurs = value;
-                else Console.WriteLine("Il faut 8 compétiteurs exactement, vérifiez vos données !");
+                else Console.WriteLine("Il faut 16 compétiteurs exactement, vérifiez vos données !");
             }
         }
 
