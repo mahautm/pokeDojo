@@ -21,8 +21,8 @@ namespace PokeDojo_GGMM
         public List<int> HistoriqueDegats { get; set; }
         public int MarqueurDegats { get; set; }
 
-        public int TypeElementaire { get; set; } //!! il n'y avait pas de setteur
-        public int TypeVulnerable { get; set; } //!! il n'y avait pas de setteur
+        public int TypeElementaire { get; set; }
+        public int TypeVulnerable { get; set; }
 
         public List<CapaciteSpeciale> CapacitesSpeciales { get; set; }
         public List<AlterationEtat> AlterationsEtat { get; set; }
@@ -96,6 +96,9 @@ namespace PokeDojo_GGMM
                 (forceAttaque + R.Next(-20,20)) / (double)100 * ennemi.PA
                 );
 
+            //!! cas possible où les dégâts sont tellement réduits qu'ils pourraient soigner l'ennemi (100%-150% -> -50% * PA infligé en dégâts , soit Dégâts < 0 !)
+            if (Degats < 0) Degats = 0;
+
             // gestion bouclier
             bool attaqueAbsorbée = false;
             foreach (AlterationEtatBouclier shield in ennemi.AlterationsEtat)
@@ -132,9 +135,39 @@ namespace PokeDojo_GGMM
             return false;
         }
         
+        //Creation d'une nouvelle Capacité
         public void NouvelleCapacite()
         {
-            
+            int typePouvoir = Random.Next(3);
+            if(typePouvoir == 0)
+            {
+                //!! le poké gagne un shield de 2 tours absorbant jusqu'à [ 50*(3-Evolution) + PV / (2+Evolution) ] dégâts
+                CapacitesSpeciales.Add(new CapaciteSpeciale(Nom, _types[TypeElementaire], new List<AlterationEtat> { new AlterationEtatBouclier(2, true, 50*(3-Evolution) + PV/(2+Evolution)) }));
+            }
+            else
+            if (typePouvoir == 1)
+            {
+                //!! le poké gagne 50% de dégâts en + pdt 3 tours
+                CapacitesSpeciales.Add(new CapaciteSpeciale(Nom, _types[TypeElementaire], new List<AlterationEtat> { new AlterationEtatPA(3, true, 50) }));
+            }
+            else
+            {
+                //!! l'ennemi gagne 50% de dégâts en + pdt 3 tours
+                CapacitesSpeciales.Add(new CapaciteSpeciale(Nom, _types[TypeElementaire], new List<AlterationEtat> { new AlterationEtatPA(3, false, -50) })); 
+            }
+        }
+
+        public void LancerCapacite(Pokemon ennemi, int capacite)
+        {
+            //si le pouvoir est réflexif, il affecte le pokémon
+            if (CapacitesSpeciales[capacite]._alterations[0]._reflexif)
+            {
+                AlterationsEtat.Add(CapacitesSpeciales[capacite]._alterations[0]);
+            }
+                
+            //sinon il affecte le pokémon adverse
+            else
+                ennemi.AlterationsEtat.Add(CapacitesSpeciales[capacite]._alterations[0]);
         }
 
         //GENERE N INT ALEATOIRES

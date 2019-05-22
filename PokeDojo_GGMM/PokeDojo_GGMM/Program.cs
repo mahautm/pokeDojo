@@ -106,15 +106,10 @@ namespace PokeDojo_GGMM
 
             Random random = new Random();
 
+            // création des 16 Joueurs
             foreach (string dresseur in nomsDresseurs)
-            {
-                //Console.WriteLine("\n\n" + dresseur);
-                
+            {                
                 List<int> indexPokemons = GenererNint(3,0,16,random);
-                /*
-                foreach (int index in indexPokemons)
-                    Console.Write(" " + index);
-*/
 
                 List<Pokemon> pokemons = new List<Pokemon>();
                 foreach (int index in indexPokemons)
@@ -123,6 +118,8 @@ namespace PokeDojo_GGMM
                 }
                 dresseurs.Add(new Joueur(dresseur, pokemons));
             }
+
+            Arene arene = new Arene(dresseurs);
 
             Console.WriteLine("\n\nVoici les dresseurs !!!");
             foreach (Joueur dresseur in dresseurs)
@@ -378,6 +375,7 @@ namespace PokeDojo_GGMM
                 //!!Capacité spéciale
                 if (j1.EstHumain)
                 {
+                    //!! j1.Actif
                     Console.WriteLine("WIP : Cette option n'est pas encore disponible");
                 }
             }
