@@ -156,7 +156,7 @@ namespace PokeDojo_GGMM
                     {
                         if (selection != 10)
                             selection = (selection + 1);
-                        else if (depart != 46) //!! Combien de pokémons dans la liste Guillaumme ?
+                        else if (depart != 6) //!! Combien de pokémons dans la liste Guillaumme ?
                             depart += 1;
                     }
 
@@ -171,13 +171,23 @@ namespace PokeDojo_GGMM
 
             } while (sac.Count < 3);
             //Créer le joueur personnalisé.
-            Joueur j1 = new Joueur(nom, sac);
+            Joueur j1 = new Joueur(nom, sac)
+            {
+                EstHumain = true
+            };
             // 1 : Faire apparaitre l'arbre des joueurs
             arene.Competiteurs[0] = j1;
             arene.Arbre[0][0] = j1;
+
             Console.WriteLine("Voici les compétiteurs...\n");
             arene.AfficherArbreCompetition();
-
+            for (int roundNumber = 0; roundNumber < 3; roundNumber++)
+            {
+                for (int fightNumber = 0; fightNumber < arene.Arbre[roundNumber].Count; fightNumber+=2)
+                {
+                    JouerCombat(arene.Arbre[roundNumber][fightNumber], arene.Arbre[roundNumber][fightNumber + 1]);          
+                }
+            }
             //!! 2 : Faire jouer le match entre le joueur et son adversaire
                 //!! Choisir au hasard lequel commence grâce au pile ou face
                 //!! Chacun leur tour les joueurs choisissent leurs actions, à la fin l'un d'entre eux meurent
