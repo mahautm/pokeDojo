@@ -61,6 +61,7 @@ namespace PokeDojo_GGMM
             }
 
             // Noms des Joueurs
+            DeroulerPartie(PokeList);
             List<string> nomsDresseurs = new List<string>
             {
                 "Sasha   ", "Pasha    ", "Datsha   ", "Chisha   ",
@@ -96,7 +97,6 @@ namespace PokeDojo_GGMM
             */
             }
             //Console.ReadLine();
-            dresseurs[0].EstHumain = true;
             JouerCombat(dresseurs[0], dresseurs[1]);
         }
 
@@ -199,22 +199,87 @@ namespace PokeDojo_GGMM
             return entiers;
         }
 
-
-        public static void DeroulerPartie(Arene arene)
+        public static void DeroulerPartie(List<Pokemon> PokeList)
         {
-            Console.WriteLine("Poke DOJO. \n\n Un jeu par Guillaume Grosse et Matéo Mahaut\nProjet Programmation Avancée\nENSC S6");
+            Console.WriteLine("\t\t\tPoke DOJO. \n\n\tUn jeu par Guillaume Grosse et Matéo Mahaut\n\t\tProjet Programmation Avancée\n\t\t\tENSC S6");
             Console.ReadKey();
+            Console.Clear();
             Console.WriteLine("Vous vous apprétez à participer au plus grand tournoi de dresseurs qu'il soit !");
-            //!! Permettre au joueur de choisir son nom (et ses Pokémons ?)
-            Console.WriteLine("Comment vous appelez vous jeune dresseur ?");
+
+            // Permettre au joueur de choisir son nom 
+            Console.WriteLine("\t\tQuel est votre nom, jeune dresseur ?");
+            Console.Write("\t\t");
             string nom = Console.ReadLine();
+
             // Permettre au joueur de Choisir ses pokémons :
-            //!!WIP
+            int depart = 0;
+            int selection = 0;
+            ConsoleKey cki;
             List<Pokemon> sac = new List<Pokemon>();
+            do
+            {
+                do
+                {
+                    Console.Clear();
+                    Console.WriteLine("Bonjour {0}, Avec quels Pokemons voulez vous jouer ?",nom);
+                    int i = 0;
+
+                    //Afficher la liste des pokémons
+                    while (i <= 10)
+                    {
+                        if (PokeList[depart + i].Evolution == 0)
+                        {
+                            if (i == selection)
+                                Console.Write(">>");
+                            Console.WriteLine("\t" + PokeList[depart + i]);
+                            i++;
+                        }
+                    }
+
+                    //Rappel des choix
+                    Console.WriteLine();
+                    Console.WriteLine("Voici les pokémons que vous avez sélectionnés :");
+                    Console.ForegroundColor = ConsoleColor.DarkGreen;
+                    foreach(Pokemon p in sac)
+                        Console.WriteLine(p);
+                    Console.ResetColor();
+                    Console.WriteLine("\nAppuyer sur --> A <-- pour annuler la sélection");
+
+                    cki = Console.ReadKey().Key;
+
+                    //Prise en compte des entrées clavier
+                    if (cki == ConsoleKey.UpArrow)
+                    {
+                        if (selection != 0)
+                            selection = (selection - 1);
+                        else if (depart != 0)
+                        {
+                            depart -= 1;
+                        }
+                    }
+
+                    if (cki == ConsoleKey.DownArrow)
+                    {
+                        if (selection != 10)
+                            selection = (selection + 1);
+                        else if (depart != 100) //!! Combien de pokémons dans la liste Guillaumme ?
+                            depart += 1;
+                    }
+
+
+                } while (cki != ConsoleKey.Enter && cki != ConsoleKey.Spacebar && cki != ConsoleKey.A);
+
+                //Permettre une annulation
+                if (cki == ConsoleKey.A)
+                    sac = new List<Pokemon>();
+                else
+                    sac.Add(PokeList[selection + depart]);
+
+            } while (sac.Count < 3);
             Joueur j1 = new Joueur(nom, sac);
 
             //!! 1 : Faire apparaitre l'arbre des joueurs
-            arene.AfficherArbreCompetition();
+//!!arene.AfficherArbreCompetition();
 
             //!! 2 : Faire jouer le match entre le joueur et son adversaire
                 //!! Choisir au hasard lequel commence grâce au pile ou face
