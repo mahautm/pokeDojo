@@ -347,8 +347,13 @@ namespace PokeDojo_GGMM
                         cki = Console.ReadKey().Key;
                     } while (cki != ConsoleKey.Enter && cki != ConsoleKey.Spacebar);
                     Console.WriteLine("{0} Utilise {1}... Incroyable !");
+                    Console.WriteLine(j1.Actif.CapacitesSpeciales.Count);
                     j1.Actif.LancerCapacite(j2.Actif, selection);
-                    Console.WriteLine("WIP : Cette option n'est pas encore disponible");
+                    Console.WriteLine(j1.Actif.CapacitesSpeciales.Count);
+
+                    Console.Clear();
+                    AfficherCombat(j1,j2);
+                    Console.ReadKey();
                 }
             }
 

@@ -82,19 +82,23 @@ namespace PokeDojo_GGMM
         {
             // gestion puissance d'attaque
             int forceAttaque = 100;
-            foreach(AlterationEtat alteration in ennemi.AlterationsEtat)
+            if(ennemi.AlterationsEtat != null)
             {
-                if (alteration is AlterationEtatPA)
+                foreach (AlterationEtat alteration in ennemi.AlterationsEtat)
                 {
-                    AlterationEtatPA boost = (AlterationEtatPA)alteration;
-                    if (boost.Duree == 0)
-                        ennemi.AlterationsEtat.Remove(alteration);
-                    else
-                        alteration.Duree -= 1;
+                    if (alteration is AlterationEtatPA)
+                    {
+                        AlterationEtatPA boost = (AlterationEtatPA)alteration;
+                        if (boost.Duree == 0)
+                            ennemi.AlterationsEtat.Remove(alteration);
+                        else
+                            alteration.Duree -= 1;
 
-                    forceAttaque += boost.Modificateur;
+                        forceAttaque += boost.Modificateur;
+                    }
                 }
             }
+            
 
             Random R = new Random();
             int Degats = (int)Math.Ceiling(
