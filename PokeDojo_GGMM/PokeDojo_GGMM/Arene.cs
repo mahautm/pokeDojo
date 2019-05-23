@@ -70,18 +70,129 @@ namespace PokeDojo_GGMM
             }
         }
 
+        internal List<Pokemon> PokeList1 { get => PokeList; set => PokeList = value; }
+        
+        //Création des Listes pour les pokémons : Evolutions et types élémentaires
+
+        readonly List<string> basique = new List<string> {
+                "TrukiPik",    "ShozaFeuil",
+                "TrukiBrul",   "TrukaMèsh",
+                "TrukiNaj",    "TrukaBull",
+                "TrukiCaï",    "ShozaRtik",
+                "TrukiVol",    "TrukaDézèl",
+                "TrukiCrain",  "TrukaOtik",
+                "TrukiBrill",  "TrukaVide",
+                "TrukiKrak",   "TrukaLcair"
+            };
+        readonly List<string> alpha = new List<string>
+            {
+                "Mini", "Maki", "Piti", "Fifi",
+                "Loli", "Kawai", "Shipi", "Mimi"
+            };
+        readonly List<string> beta = new List<string>
+            {
+                "Mega", "Peta", "Supra", "Masta",
+                "Tera", "Hypra", "Giga", "Ultra"
+            };
+        readonly List<string> types = new List<string>
+            {
+                "Plante", "Feu", "Eau", "Glace", "Dragon", "Ténèbres", "Argent", "Roche"
+            };
+        readonly List<string> nomsDresseurs = new List<string>
+            {
+                "Sasha   ", "Pasha    ", "Datsha   ", "Chisha   ",
+                "Guarasha", "Katiousha", "Shashasha", "Kurarasha",
+                "Galusha ", "Crasha   ", "Exarsha  ", "TeleAsha ",
+                "Shosha  ", "Moksha   ", "Geisha   ", "MilkShaha"
+            };
+        List<Pokemon> PokeList;
+
 
 
         //Constructeur
         public Arene(List<Joueur> competiteurs)
         {
+            PokeList1 = CreerPokemons(basique, alpha, beta, types);
             Competiteurs = competiteurs;
             _arbre= new List<List<Joueur>> { competiteurs };
+        }
+        public Arene()
+        {
+            PokeList1 = CreerPokemons(basique, alpha, beta, types);
+            Random random = new Random();
+            Competiteurs = CreerJoueurs(nomsDresseurs, PokeList1, random);
+            _arbre = new List<List<Joueur>> { Competiteurs };
         }
 
         //Méthodes
         //!! une méthode qui génère l'arbre de tournoi, une qui permet de simuler une étape dans l'arbre 
         //!! (une partie du joueur, 15 parties simulées par exemple)
+        public static List<Pokemon> CreerPokemons(List<string> basique, List<string> alpha, List<string> beta, List<string> types)
+        {
+            List<Pokemon> ListePokemons = new List<Pokemon>();
+
+            int count = 0;
+            int indexType = 0;
+            Random random = new Random();
+
+            foreach (string basik in basique)
+            {
+                if (count % 2 == 0 && count != 0)
+                    indexType++;
+
+                ListePokemons.Add(new Pokemon(alpha[random.Next(alpha.Count)] + basik, random.Next(50, 75), random.Next(15, 25), types[indexType][0]));
+
+                ListePokemons.Add(new Pokemon(basik, random.Next(100, 150), random.Next(35, 55), types[indexType][0]));
+
+                ListePokemons.Add(new Pokemon(beta[random.Next(beta.Count)] + basik, random.Next(200, 250), random.Next(45, 65), types[indexType][0]));
+
+                count++;
+            }
+
+            foreach (Pokemon pokemon in ListePokemons)
+            {
+                if (pokemon.Evolution == 0)
+                    pokemon.NouvelleCapacite();
+            }
+
+            return ListePokemons;
+        }
+        public static List<Joueur> CreerJoueurs(List<string> nomsDresseurs, List<Pokemon> pokeList, Random random)
+        {
+            //Liste des dresseurs
+            List<Joueur> dresseurs = new List<Joueur>();
+
+            // création des 16 Joueurs
+            foreach (string dresseur in nomsDresseurs)
+            {
+                List<int> indexPokemons = GenererNint(3, 0, 16, random);
+
+                List<Pokemon> pokemons = new List<Pokemon>();
+                foreach (int index in indexPokemons)
+                {
+                    pokemons.Add(pokeList[index * 3]);
+                }
+                dresseurs.Add(new Joueur(dresseur, pokemons));
+            }
+
+            return dresseurs;
+        }
+        public static List<int> GenererNint(int N, int min, int max, Random random)
+        {
+            List<int> entiers = new List<int> { };
+            int valeur;
+
+            while (entiers.Count() != N)
+            {
+                valeur = random.Next(min, max);
+                if (!entiers.Contains(valeur))
+                {
+                    entiers.Add(valeur);
+                }
+            }
+
+            return entiers;
+        }
 
         public void AfficherArbreCompetition()
         {

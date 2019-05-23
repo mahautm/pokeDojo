@@ -14,37 +14,9 @@ namespace PokeDojo_GGMM
             //!! https://bulbapedia.bulbagarden.net/wiki/List_of_Pok%C3%A9mon_by_base_stats_(Generation_VII-present)
             //!! https://www.pokebip.com/pokedex/4eme_generation_pokeliste_liste_des_pokemon.html
 
-            Random random = new Random();
 
-            //Création des Listes pour les pokémons : Evolutions et types élémentaires
-            List<string> basique = new List<string> {
-                "TrukiPik",    "ShozaFeuil",
-                "TrukiBrul",   "TrukaMèsh",
-                "TrukiNaj",    "TrukaBull",
-                "TrukiCaï",    "ShozaRtik",
-                "TrukiVol",    "TrukaDézèl",
-                "TrukiCrain",  "TrukaOtik",
-                "TrukiBrill",  "TrukaVide",
-                "TrukiKrak",   "TrukaLcair"
-            };
-            List<string> alpha = new List<string>
-            {
-                "Mini", "Maki", "Piti", "Fifi",
-                "Loli", "Kawai", "Shipi", "Mimi"
-            };
-            List<string> beta = new List<string>
-            {
-                "Mega", "Peta", "Supra", "Masta",
-                "Tera", "Hypra", "Giga", "Ultra"
-            };
-            List<string> types = new List<string>
-            {
-                "Plante", "Feu", "Eau", "Glace", "Dragon", "Ténèbres", "Argent", "Roche"
-            };
 
             //Création de la liste des 18 pokémons et de leurs 32 évolutions
-            List<Pokemon> PokeList = CreerPokemons(basique,alpha,beta,types);
-
             //!! Affichage
             {
                 /*
@@ -61,17 +33,9 @@ namespace PokeDojo_GGMM
             }
 
             // Noms des Joueurs
-            List<string> nomsDresseurs = new List<string>
-            {
-                "Sasha   ", "Pasha    ", "Datsha   ", "Chisha   ",
-                "Guarasha", "Katiousha", "Shashasha", "Kurarasha",
-                "Galusha ", "Crasha   ", "Exarsha  ", "TeleAsha ",
-                "Shosha  ", "Moksha   ", "Geisha   ", "MilkShaha"
-            };
+            DeroulerPartie();
 
-            List<Joueur> dresseurs = CreerJoueurs(nomsDresseurs, PokeList, random);
             
-            Arene arene = new Arene(dresseurs);
 
             //!! tests Guillaume
             {
@@ -96,69 +60,12 @@ namespace PokeDojo_GGMM
             */
             }
             //Console.ReadLine();
-            dresseurs[0].EstHumain = true;
-            JouerCombat(dresseurs[0], dresseurs[1]);
         }
 
         //!!=========
         //FIN DU MAIN
         //!!=========
         
-        //Creation de Pokemons
-        public static List<Pokemon> CreerPokemons(List<string> basique, List<string> alpha, List<string> beta, List<string> types)
-        {
-            List<Pokemon> ListePokemons = new List<Pokemon>();
-
-            int count = 0;
-            int indexType = 0;
-            Random random = new Random();
-
-            foreach (string basik in basique)
-            {
-                if (count % 2 == 0 && count != 0)
-                    indexType++;
-
-                ListePokemons.Add(new Pokemon(alpha[random.Next(alpha.Count)] + basik, random.Next(50, 75), random.Next(15, 25), types[indexType][0]));
-
-                ListePokemons.Add(new Pokemon(basik, random.Next(100, 150), random.Next(35, 55), types[indexType][0]));
-
-                ListePokemons.Add(new Pokemon(beta[random.Next(beta.Count)] + basik, random.Next(200, 250), random.Next(45, 65), types[indexType][0]));
-
-                count++;
-            }
-
-            foreach(Pokemon pokemon in ListePokemons)
-            {
-                if (pokemon.Evolution == 0)
-                    pokemon.NouvelleCapacite();
-            }
-
-            return ListePokemons;
-        }
-
-        //Creation de Dresseurs
-        public static List<Joueur> CreerJoueurs(List<string> nomsDresseurs, List<Pokemon> pokeList, Random random)
-        {
-            //Liste des dresseurs
-            List<Joueur> dresseurs = new List<Joueur>();
-
-            // création des 16 Joueurs
-            foreach (string dresseur in nomsDresseurs)
-            {
-                List<int> indexPokemons = GenererNint(3, 0, 16, random);
-
-                List<Pokemon> pokemons = new List<Pokemon>();
-                foreach (int index in indexPokemons)
-                {
-                    pokemons.Add(pokeList[index * 3]);
-                }
-                dresseurs.Add(new Joueur(dresseur, pokemons));
-            }
-
-            return dresseurs;
-        }
-
-
         public static Pokemon EvoluerPokemon(Pokemon pokemon, List<Pokemon> ListePokemons)
         {
             if (ListePokemons.IndexOf(pokemon) % 3 != 2)
@@ -178,42 +85,95 @@ namespace PokeDojo_GGMM
             }
                 
         }
-
-         
-
-        //GENERE N INT ALEATOIRES
-        public static List<int> GenererNint(int N, int min, int max, Random random)
+        
+        public static void DeroulerPartie()
         {
-            List<int> entiers = new List<int> { };
-            int valeur;
-
-            while (entiers.Count() != N)
-            {
-                valeur = random.Next(min,max);
-                if (!entiers.Contains(valeur))
-                {
-                    entiers.Add(valeur);
-                }
-            }
-
-            return entiers;
-        }
-
-
-        public static void DeroulerPartie(Arene arene)
-        {
-            Console.WriteLine("Poke DOJO. \n\n Un jeu par Guillaume Grosse et Matéo Mahaut\nProjet Programmation Avancée\nENSC S6");
+            Console.WriteLine("\t\t\tPoke DOJO. \n\n\tUn jeu par Guillaume Grosse et Matéo Mahaut\n\t\tProjet Programmation Avancée\n\t\t\tENSC S6");
             Console.ReadKey();
+            Console.Clear();
             Console.WriteLine("Vous vous apprétez à participer au plus grand tournoi de dresseurs qu'il soit !");
-            //!! Permettre au joueur de choisir son nom (et ses Pokémons ?)
-            Console.WriteLine("Comment vous appelez vous jeune dresseur ?");
-            string nom = Console.ReadLine();
-            // Permettre au joueur de Choisir ses pokémons :
-            //!!WIP
-            List<Pokemon> sac = new List<Pokemon>();
-            Joueur j1 = new Joueur(nom, sac);
 
-            //!! 1 : Faire apparaitre l'arbre des joueurs
+            // Permettre au joueur de choisir son nom 
+            Console.WriteLine("\t\tQuel est votre nom, jeune dresseur ?");
+            Console.Write("\t\t");
+            string nom = Console.ReadLine();
+
+            // Permettre au joueur de Choisir ses pokémons :
+            int depart = 0;
+            int selection = 0;
+            ConsoleKey cki;
+            List<Pokemon> sac = new List<Pokemon>();
+            Arene arene = new Arene();
+
+            do
+            {
+                do
+                {
+                    Console.Clear();
+                    Console.WriteLine("Bonjour {0}, Avec quels Pokemons voulez vous jouer ?",nom);
+                    int i = 0;
+                    //Afficher la liste des pokémons
+                    while (i <= 10)
+                    {
+                        if (arene.PokeList1[depart + i].Evolution == 0)
+                        {
+                            if (i == selection)
+                            {
+                                Console.ForegroundColor = ConsoleColor.DarkGreen;
+                                Console.Write(">>");
+                                Console.WriteLine("\t" + arene.PokeList1[depart + i].Nom + "\t" + arene.PokeList1[depart + i].PV + " PV\t" + arene.PokeList1[depart + i].PA + "PA\t" + "Elementaire de " + arene.PokeList1[depart + i]._types[arene.PokeList1[depart + i].TypeElementaire]);
+                                Console.ResetColor();
+                            }
+                            else
+                                Console.WriteLine("\t" + arene.PokeList1[depart + i]);
+                            i++;
+                        }
+                    }
+
+                    //Rappel des choix
+                    Console.WriteLine();
+                    Console.WriteLine("Voici les pokémons que vous avez sélectionnés :");
+                    Console.ForegroundColor = ConsoleColor.DarkGreen;
+                    foreach(Pokemon p in sac)
+                        Console.WriteLine(p);
+                    Console.ResetColor();
+                    Console.WriteLine("\nAppuyer sur --> A <-- pour annuler la sélection");
+
+                    cki = Console.ReadKey().Key;
+
+                    //Prise en compte des entrées clavier
+                    if (cki == ConsoleKey.UpArrow)
+                    {
+                        if (selection != 0)
+                            selection = (selection - 1);
+                        else if (depart != 0)
+                        {
+                            depart -= 1;
+                        }
+                    }
+
+                    if (cki == ConsoleKey.DownArrow)
+                    {
+                        if (selection != 10)
+                            selection = (selection + 1);
+                        else if (depart != 46) //!! Combien de pokémons dans la liste Guillaumme ?
+                            depart += 1;
+                    }
+
+
+                } while (cki != ConsoleKey.Enter && cki != ConsoleKey.Spacebar && cki != ConsoleKey.A);
+
+                //Permettre une annulation
+                if (cki == ConsoleKey.A)
+                    sac = new List<Pokemon>();
+                else
+                    sac.Add(arene.PokeList1[selection + depart]);
+
+            } while (sac.Count < 3);
+            //Créer le joueur personnalisé.
+            Joueur j1 = new Joueur(nom, sac);
+            // 1 : Faire apparaitre l'arbre des joueurs
+            Console.WriteLine("Voici les compétiteurs...\n");
             arene.AfficherArbreCompetition();
 
             //!! 2 : Faire jouer le match entre le joueur et son adversaire
