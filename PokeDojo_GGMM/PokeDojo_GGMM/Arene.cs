@@ -73,26 +73,29 @@ namespace PokeDojo_GGMM
         internal List<Pokemon> PokeList1 { get => PokeList; set => PokeList = value; }
         
         //Création des Listes pour les pokémons : Evolutions et types élémentaires
-
         readonly List<string> basique = new List<string> {
-                "TrukiPik",    "ShozaFeuil",
-                "TrukiBrul",   "TrukaMèsh",
-                "TrukiNaj",    "TrukaBull",
-                "TrukiCaï",    "ShozaRtik",
-                "TrukiVol",    "TrukaDézèl",
-                "TrukiCrain",  "TrukaOtik",
-                "TrukiBrill",  "TrukaVide",
-                "TrukiKrak",   "TrukaLcair"
+                "TrukiPik",    "TrukaFeuil", "Brikactus", "Shozasève",  "Poképi",    "Pikabaga",
+                "TrukiBrul",   "TrukaMèsh",  "Brikatizé", "Shozardentt","Pokrépite", "Pikalumett",
+                "TrukiNaj",    "TrukaBull",  "Brikégou",  "Shozakeuz",  "Pokékluz",  "Pikakduk",
+                "TrukiCaï",    "ShozaRtik",  "Briglassé", "Shozigloo",  "Pokibéri",  "Pikalpin",
+                "TrukiVol",    "TrukaDézèl", "Brikaéré",  "Shozailée",  "Pokécaillé","Pikazoté",
+                "TrukiCrain",  "TrukaOtik",  "Brikopak",  "Shozobskur", "Pokérétik", "Pikabîme",
+                "TrukiBrill",  "TrukaVide",  "Brigrena",  "Shozonyx",   "Pokétain",  "PikAgate",
+                "TrukiKrak",   "TrukaLcair", "Brikolitik","Shozabsid", "Pokengrès", "Pikaveau"
             };
-        readonly List<string> alpha = new List<string>
+        readonly List<string> mimi = new List<string>
             {
-                "Mini", "Maki", "Piti", "Fifi",
-                "Loli", "Kawai", "Shipi", "Mimi"
+                "Mini",     "Maki",     "Piti",     "Fifi",
+                "Loli",     "Kawai",    "Shipi",    "Mimi",
+                "Toopi",    "Kiwi",     "Sisi",     "Merri",
+                "Bibi",     "Joli",     "Piti",     "Dodi",
             };
-        readonly List<string> beta = new List<string>
+        readonly List<string> mega = new List<string>
             {
                 "Mega", "Peta", "Supra", "Masta",
-                "Tera", "Hypra", "Giga", "Ultra"
+                "Tera", "Hypra", "Giga", "Ultra",
+                "Oura", "Alpha", "Octa", "Kobra",
+                "Grota", "Bigta", "Femta", "Vigra"
             };
         readonly List<string> types = new List<string>
             {
@@ -105,20 +108,20 @@ namespace PokeDojo_GGMM
                 "Galusha ", "Crasha   ", "Exarsha  ", "TeleAsha ",
                 "Shosha  ", "Moksha   ", "Geisha   ", "MilkShaha"
             };
-        List<Pokemon> PokeList;
 
+        public List<Pokemon> PokeList;
 
 
         //Constructeur
         public Arene(List<Joueur> competiteurs)
         {
-            PokeList1 = CreerPokemons(basique, alpha, beta, types);
+            PokeList1 = CreerPokemons(basique, mimi, mega, types);
             Competiteurs = competiteurs;
             _arbre= new List<List<Joueur>> { competiteurs };
         }
         public Arene()
         {
-            PokeList1 = CreerPokemons(basique, alpha, beta, types);
+            PokeList1 = CreerPokemons(basique, mimi, mega, types);
             Random random = new Random();
             Competiteurs = CreerJoueurs(nomsDresseurs, PokeList1, random);
             _arbre = new List<List<Joueur>> { Competiteurs };
@@ -127,7 +130,8 @@ namespace PokeDojo_GGMM
         //Méthodes
         //!! une méthode qui génère l'arbre de tournoi, une qui permet de simuler une étape dans l'arbre 
         //!! (une partie du joueur, 15 parties simulées par exemple)
-        public static List<Pokemon> CreerPokemons(List<string> basique, List<string> alpha, List<string> beta, List<string> types)
+
+        public static List<Pokemon> CreerPokemons(List<string> basique, List<string> mimi, List<string> mega, List<string> types)
         {
             List<Pokemon> ListePokemons = new List<Pokemon>();
 
@@ -137,14 +141,15 @@ namespace PokeDojo_GGMM
 
             foreach (string basik in basique)
             {
-                if (count % 2 == 0 && count != 0)
+                if (count % 6 == 0 && count != 0)
                     indexType++;
 
-                ListePokemons.Add(new Pokemon(alpha[random.Next(alpha.Count)] + basik, random.Next(50, 75), random.Next(15, 25), types[indexType][0]));
+                ListePokemons.Add(new Pokemon(mimi[random.Next(mimi.Count)] + basik, random.Next(50, 75), random.Next(15, 25), types[indexType][0]));
 
                 ListePokemons.Add(new Pokemon(basik, random.Next(100, 150), random.Next(35, 55), types[indexType][0]));
 
-                ListePokemons.Add(new Pokemon(beta[random.Next(beta.Count)] + basik, random.Next(200, 250), random.Next(45, 65), types[indexType][0]));
+                ListePokemons.Add(new Pokemon(mega[random.Next(mega.Count)] + basik, random.Next(200, 250), random.Next(45, 65), types[indexType][0]));
+
 
                 count++;
             }
@@ -157,6 +162,7 @@ namespace PokeDojo_GGMM
 
             return ListePokemons;
         }
+
         public static List<Joueur> CreerJoueurs(List<string> nomsDresseurs, List<Pokemon> pokeList, Random random)
         {
             //Liste des dresseurs
@@ -177,6 +183,7 @@ namespace PokeDojo_GGMM
 
             return dresseurs;
         }
+
         public static List<int> GenererNint(int N, int min, int max, Random random)
         {
             List<int> entiers = new List<int> { };

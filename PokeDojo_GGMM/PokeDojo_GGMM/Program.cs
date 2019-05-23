@@ -18,23 +18,24 @@ namespace PokeDojo_GGMM
 
             //Création de la liste des 18 pokémons et de leurs 32 évolutions
             //!! Affichage
+
+
             {
                 /*
-                foreach (Pokemon poke in PokeList)
-                {
-                    if (PokeList.IndexOf(poke) % 6 == 0)
-                        Console.WriteLine("\n\nElement " + types[poke.TypeElementaire]);
+                    foreach (Pokemon poke in PokeList)
+                    {
+                        if (PokeList.IndexOf(poke) % 6 == 0)
+                            Console.WriteLine("\n\nElement " + types[poke.TypeElementaire]);
 
-                    if (PokeList.IndexOf(poke) % 6 == 3)
-                        Console.WriteLine();
-                    Console.Write(poke + "\t\t");
-                }
-                */
+                        if (PokeList.IndexOf(poke) % 6 == 3)
+                            Console.WriteLine();
+                        Console.Write(poke + "\t\t");
+                    }
+                    */
             }
-
             // Noms des Joueurs
-            DeroulerPartie();
 
+            DeroulerPartie();
             
 
             //!! tests Guillaume
@@ -59,13 +60,15 @@ namespace PokeDojo_GGMM
             Console.WriteLine(test);
             */
             }
-            //Console.ReadLine();
+            Console.ReadLine();
+
         }
+
 
         //!!=========
         //FIN DU MAIN
         //!!=========
-        
+
         public static Pokemon EvoluerPokemon(Pokemon pokemon, List<Pokemon> ListePokemons)
         {
             if (ListePokemons.IndexOf(pokemon) % 3 != 2)
@@ -113,7 +116,7 @@ namespace PokeDojo_GGMM
                     Console.WriteLine("Bonjour {0}, Avec quels Pokemons voulez vous jouer ?",nom);
                     int i = 0;
                     //Afficher la liste des pokémons
-                    while (i <= 10)
+                    while (i < 48)
                     {
                         if (arene.PokeList1[depart + i].Evolution == 0)
                         {
@@ -121,11 +124,11 @@ namespace PokeDojo_GGMM
                             {
                                 Console.ForegroundColor = ConsoleColor.DarkGreen;
                                 Console.Write(">>");
-                                Console.WriteLine("\t" + arene.PokeList1[depart + i].Nom + "\t" + arene.PokeList1[depart + i].PV + " PV\t" + arene.PokeList1[depart + i].PA + "PA\t" + "Elementaire de " + arene.PokeList1[depart + i]._types[arene.PokeList1[depart + i].TypeElementaire]);
+                                Console.WriteLine("\t" + arene.PokeList1[3*i].Nom + "\t" + arene.PokeList1[3*i].PV + " PV\t" + arene.PokeList1[3*i].PA + "PA\t" + "Elementaire de " + arene.PokeList1[3*i]._types[arene.PokeList1[3*i].TypeElementaire]);
                                 Console.ResetColor();
                             }
                             else
-                                Console.WriteLine("\t" + arene.PokeList1[depart + i]);
+                                Console.WriteLine("\t" + arene.PokeList1[3*i]);
                             i++;
                         }
                     }
