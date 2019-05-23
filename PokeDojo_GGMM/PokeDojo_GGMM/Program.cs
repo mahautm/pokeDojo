@@ -173,6 +173,8 @@ namespace PokeDojo_GGMM
             //Créer le joueur personnalisé.
             Joueur j1 = new Joueur(nom, sac);
             // 1 : Faire apparaitre l'arbre des joueurs
+            arene.Competiteurs[0] = j1;
+            arene.Arbre[0][0] = j1;
             Console.WriteLine("Voici les compétiteurs...\n");
             arene.AfficherArbreCompetition();
 
