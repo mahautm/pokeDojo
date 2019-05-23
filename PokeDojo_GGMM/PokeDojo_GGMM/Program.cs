@@ -365,14 +365,24 @@ namespace PokeDojo_GGMM
                     do
                     {
                         Console.Clear();
-                        Console.WriteLine("Quelle Capacité spéciale voulez-vous utiliser ?");
-                        for (int i = 0; i<j1.Actif.CapacitesSpeciales.Count;i++)
+                        if(j1.Actif.CapacitesSpeciales.Count!=0)
                         {
-                            if(selection == i)
-                                Console.Write(">>");
-                            Console.WriteLine("\t{0}, {1}", j1.Actif.CapacitesSpeciales[i]._nom, j1.Actif.CapacitesSpeciales[i]._alterations[0]);
+                            Console.WriteLine("Quelle Capacité spéciale voulez-vous utiliser ?");
+                            for (int i = 0; i < j1.Actif.CapacitesSpeciales.Count; i++)
+                            {
+                                if (selection == i)
+                                    Console.Write(">>");
+                                Console.WriteLine("\t{0} - {1}", j1.Actif.CapacitesSpeciales[i]._nom, j1.Actif.CapacitesSpeciales[i]._alterations[0]);
+                            }
+                            cki = Console.ReadKey().Key;
                         }
-                        cki = Console.ReadKey().Key;
+                        //!! variante si aucune capa restante
+                        else
+                        {
+                            Console.WriteLine("Votre pokémon est à court de capacités spéciales : il effectue une attaque");
+                            cki = Console.ReadKey().Key;
+                        }
+
                     } while (cki != ConsoleKey.Enter && cki != ConsoleKey.Spacebar);
                     Console.WriteLine("{0} Utilise {1}... Incroyable !");
                     j1.Actif.LancerCapacite(j2.Actif, selection);
