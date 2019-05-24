@@ -24,11 +24,12 @@ namespace PokeDojo_GGMM
         }
         
 
-        public static Pokemon EvoluerPokemon(Pokemon pokemon, List<Pokemon> ListePokemons)
+        public static Pokemon EvoluerPokemon(Pokemon pokemon, List<Pokemon> ListePokemons, bool affichage)
         {
             if (ListePokemons.IndexOf(pokemon) % 3 != 2)
             {
-                Console.WriteLine("L'évolution de " + pokemon + " en " + ListePokemons[ListePokemons.IndexOf(pokemon) + 1] + " est un succès.");
+                if (affichage)
+                    Console.WriteLine("L'évolution de " + pokemon + " en " + ListePokemons[ListePokemons.IndexOf(pokemon) + 1] + " est un succès.");
 
                 //Quand il évolue, le pokémon gagne 2 capacités
                 pokemon.NouvelleCapacite();
@@ -38,7 +39,8 @@ namespace PokeDojo_GGMM
             }
             else
             {
-                Console.WriteLine("Impossible de faire évoluer " + pokemon + " : ce pokémon est déjà très badass.");
+                if (affichage)
+                    Console.WriteLine("Impossible de faire évoluer " + pokemon + " : ce pokémon est déjà très badass.");
                 return pokemon;
             }
                 
@@ -55,126 +57,134 @@ namespace PokeDojo_GGMM
             Console.WriteLine("\t\tQuel est votre nom, jeune dresseur ?");
             Console.Write("\t\t");
             string nom = Console.ReadLine();
-
-            // Permettre au joueur de Choisir ses pokémons :
-            int depart = 0;
-            int selection = 0;
-            ConsoleKey cki;
-            List<Pokemon> sac = new List<Pokemon>();
-            Arene arene = new Arene();
-           
+            bool choix = true;
             do
             {
+                // Permettre au joueur de Choisir ses pokémons :
+                int depart = 0;
+                int selection = 0;
+                ConsoleKey cki;
+                List<Pokemon> sac = new List<Pokemon>();
+                Arene arene = new Arene();
+
                 do
                 {
-                    Console.Clear();
-                    Console.WriteLine("Bonjour {0}, Avec quels Pokemons voulez vous jouer ?",nom);
-                    int i = 0;
-                    //Afficher la liste des pokémons
-                    while (i <= 10)
-                    {                    
+                    do
+                    {
+                        Console.Clear();
+                        Console.WriteLine("Bonjour {0}, Avec quels Pokemons voulez vous jouer ?", nom);
+                        int i = 0;
+                        //Afficher la liste des pokémons
+                        while (i <= 10)
+                        {
                             if (i == selection)
                             {
                                 //Coloration en fonction de si le Pokémon a déjà été selectionné
                                 //On utilise la multiplication par 3 pour ne tomber que sur les pokémonsau premier stade d'évolution.
-                                Console.ForegroundColor = !(sac.Contains(arene.PokeList1[3 * (depart + i)]))?ConsoleColor.DarkGreen: ConsoleColor.DarkRed;
+                                Console.ForegroundColor = !(sac.Contains(arene.PokeList1[3 * (depart + i)])) ? ConsoleColor.DarkGreen : ConsoleColor.DarkRed;
                                 Console.Write(">>");
-                                Console.WriteLine("\t" + arene.PokeList1[3*(depart+i)].Nom + "\t" + arene.PokeList1[3 * (depart + i)].PV + " PV\t" + arene.PokeList1[3 * (depart + i)].PA + "PA\t" + "Elementaire de " + arene.PokeList1[3 * (depart + i)]._types[arene.PokeList1[3 * (depart + i)].TypeElementaire]);
+                                Console.WriteLine("\t" + arene.PokeList1[3 * (depart + i)].Nom + "\t" + arene.PokeList1[3 * (depart + i)].PV + " PV\t" + arene.PokeList1[3 * (depart + i)].PA + "PA\t" + "Elementaire de " + arene.PokeList1[3 * (depart + i)]._types[arene.PokeList1[3 * (depart + i)].TypeElementaire]);
                                 Console.ResetColor();
                             }
                             else
                                 Console.WriteLine("\t" + arene.PokeList1[3 * (depart + i)]);
                             i++;
-                    }
-
-                    //Rappel des choix
-                    Console.WriteLine();
-                    Console.WriteLine("Voici les pokémons que vous avez sélectionnés :");
-                    Console.ForegroundColor = ConsoleColor.DarkGreen;
-                    foreach(Pokemon p in sac)
-                        Console.WriteLine(p);
-                    Console.ResetColor();
-                    Console.WriteLine("\nAppuyer sur --> A <-- pour annuler la sélection");
-
-                    cki = Console.ReadKey().Key;
-
-                    //Prise en compte des entrées clavier
-                    if (cki == ConsoleKey.UpArrow)
-                    {
-                        if (selection != 0)
-                            selection = (selection - 1);
-                        else if (depart != 0)
-                        {
-                            depart -= 1;
                         }
-                    }
 
-                    if (cki == ConsoleKey.DownArrow)
-                    {
-                        if (selection != 10)
-                            selection = (selection + 1);
-                        else if (depart != arene.PokeList1.Count/3 - 11) 
-                            depart += 1;
-                    }
+                        //Rappel des choix
+                        Console.WriteLine();
+                        Console.WriteLine("Voici les pokémons que vous avez sélectionnés :");
+                        Console.ForegroundColor = ConsoleColor.DarkGreen;
+                        foreach (Pokemon p in sac)
+                            Console.WriteLine(p);
+                        Console.ResetColor();
+                        Console.WriteLine("\nAppuyer sur --> A <-- pour annuler la sélection");
 
-                    //On verifie que le joueur a effectué une selection, une Annulation, et qu'il n'a pas essayé de sélectionner deux fois le même pokémon.
-                } while ((cki != ConsoleKey.Enter && cki != ConsoleKey.Spacebar && cki != ConsoleKey.A) || sac.Contains(arene.PokeList1[3 * (selection)]));
+                        cki = Console.ReadKey().Key;
 
-                //Permettre une annulation
-                if (cki == ConsoleKey.A)
-                    sac = new List<Pokemon>();
-                else
-                    sac.Add(arene.PokeList1[3*(selection + depart)]);
+                        //Prise en compte des entrées clavier
+                        if (cki == ConsoleKey.UpArrow)
+                        {
+                            if (selection != 0)
+                                selection = (selection - 1);
+                            else if (depart != 0)
+                            {
+                                depart -= 1;
+                            }
+                        }
 
-            } while (sac.Count < 3);
-            //Créer le joueur personnalisé.
-            Joueur j1 = new Joueur(nom, sac)
-            {
-                EstHumain = true
-            };
-            // 1 : Faire apparaitre l'arbre des joueurs
-            arene.Competiteurs[0] = j1;
-            arene.Arbre[0][0] = j1;
+                        if (cki == ConsoleKey.DownArrow)
+                        {
+                            if (selection != 10)
+                                selection = (selection + 1);
+                            else if (depart != arene.PokeList1.Count / 3 - 11)
+                                depart += 1;
+                        }
 
-            Console.Clear();
-            arene.AfficherArbreCompetition();
-            Console.ReadKey();
+                        //On verifie que le joueur a effectué une selection, une Annulation, et qu'il n'a pas essayé de sélectionner deux fois le même pokémon.
+                    } while ((cki != ConsoleKey.Enter && cki != ConsoleKey.Spacebar && cki != ConsoleKey.A) || sac.Contains(arene.PokeList1[3 * (selection)]));
 
-            for (int roundNumber = 0; roundNumber < 3; roundNumber++)
-            {
-                arene.Arbre.Add(new List<Joueur>());
-                for (int fightNumber = 0; fightNumber < arene.Arbre[roundNumber].Count; fightNumber+=2)
+                    //Permettre une annulation
+                    if (cki == ConsoleKey.A)
+                        sac = new List<Pokemon>();
+                    else
+                        sac.Add(arene.PokeList1[3 * (selection + depart)]);
+
+                } while (sac.Count < 3);
+                //Créer le joueur personnalisé.
+                Joueur j1 = new Joueur(nom, sac)
                 {
-                    Joueur victorieux = JouerCombat(arene.Arbre[roundNumber][fightNumber], arene.Arbre[roundNumber][fightNumber + 1],arene);
-                    Console.WriteLine("\n" + victorieux.Nom + " a gagné son combat :)");
-                    arene.Arbre[roundNumber + 1].Add(victorieux);
-                    Console.ReadKey();
-                }
-                //On remet tous les PV des gagnants à leur Maximum
-                foreach(Joueur j in arene.Arbre[roundNumber + 1])
-                {
-                    foreach(Pokemon p in j.Sac)
-                    {
-                        p.MarqueurDegats = 0;
-                        p.HistoriqueDegats.Clear();
-                    }
-                }
-                //On affiche le nouvel Arbre des combats
+                    EstHumain = true
+                };
+                // 1 : Faire apparaitre l'arbre des joueurs
+                arene.Competiteurs[0] = j1;
+                arene.Arbre[0][0] = j1;
+
+                Console.Clear();
                 arene.AfficherArbreCompetition();
                 Console.ReadKey();
 
-            }
-            //!! 2 : Faire jouer le match entre le joueur et son adversaire
-            //!! Choisir au hasard lequel commence grâce au pile ou face
-            //!! Chacun leur tour les joueurs choisissent leurs actions, à la fin l'un d'entre eux meurent
-            //!! Si le joueur meurt, aller à l'écran de fin, montrer les arbres simulés pour qu'il sache quel joueur virtuel a gagné
-            //!! Si l'adversaire meurt, aller à l'étape suivante
+                for (int roundNumber = 0; roundNumber < 4; roundNumber++)
+                {
+                    arene.Arbre.Add(new List<Joueur>());
+                    for (int fightNumber = 0; fightNumber < arene.Arbre[roundNumber].Count; fightNumber += 2)
+                    {
+                        Joueur victorieux = JouerCombat(arene.Arbre[roundNumber][fightNumber], arene.Arbre[roundNumber][fightNumber + 1], arene);
+                        Console.WriteLine("\n" + victorieux.Nom + " a gagné son combat :)");
+                        arene.Arbre[roundNumber + 1].Add(victorieux);
+                        Console.ReadKey();
+                    }
+                    //On remet tous les PV des gagnants à leur Maximum
+                    foreach (Joueur j in arene.Arbre[roundNumber + 1])
+                    {
+                        foreach (Pokemon p in j.Sac)
+                        {
+                            p.MarqueurDegats = 0;
+                            p.HistoriqueDegats.Clear();
+                        }
+                    }
+                    //On affiche le nouvel Arbre des combats
+                    arene.AfficherArbreCompetition();
+                    Console.ReadKey();
 
-            //!! 3 : Simuler les matchs entre les joueurs aléatoires
-            //!! Faire jouer une partie mais sans afficher les écrans texte intermédiaires
-            //!! OU Assigner une probabilité de victoire en fonction du type et de la puissance d'attaque en mode 'light'
-            //!! Itérer jusqu'à la finale
-            //!! Ajouter un écran de victoire et un HIGHSCORES pour l'UX
+                }
+                Console.WriteLine("Le grand gagnant est... " + arene.Arbre[3][0]);
+
+                do
+                {
+                    Console.Clear();
+                    if (choix == true)
+                        Console.WriteLine("  --> Rejouer <--   ou       Arrêter\n\n(utiliser les flèches du clavier pour sélectionner)");
+                    else Console.WriteLine("      Rejouer       ou   --> Arrêter <--\n\n(utiliser les flèches du clavier pour sélectionner)");
+                    cki = Console.ReadKey().Key;
+
+
+                    if (cki == ConsoleKey.LeftArrow || cki == ConsoleKey.RightArrow) choix = !choix;
+
+                } while (cki != ConsoleKey.Enter && cki != ConsoleKey.Spacebar);
+                Console.Clear();
+            } while (choix == true);
+           
         }
         // Dans la version actuelle du jeu il ne peut y avoir qu'un joueur humain.
         // S'il y a un joueur humain, c'est j1
@@ -227,8 +237,8 @@ namespace PokeDojo_GGMM
                 if (!pokeVivant)
                 {
                     //si le poké qui l'a tué en est a son deuxième meurtre, on le fait évoluer. de toute façon on incrémente son KillCount
-                    if (++j1.Actif.KillCount == 2 && j1.Actif.Evolution < 3)
-                        EvoluerPokemon(j1.Actif, arene.PokeList1);
+                    if (++j1.Actif.KillCount == 2)
+                        EvoluerPokemon(j1.Actif, arene.PokeList1, j1.EstHumain);
                         
 
 
@@ -254,8 +264,11 @@ namespace PokeDojo_GGMM
                     if (j2.EstHumain)
                         ChoisirPokemonHumain(j2);
                     if (j1.EstHumain || j2.EstHumain)
+                    {
                         Console.WriteLine(" {0} Le remplace avec {1} !", j2.Nom, j2.Actif.Nom);
-                    Console.ReadKey();
+                        Console.ReadKey();
+                    }
+                        
                     //On inverse ensuite les joueurs pour alterner le joueur qui défend et celui qui attaque.
                 }
                 temp = j2;
@@ -334,6 +347,7 @@ namespace PokeDojo_GGMM
                         //!! variante si aucune capa restante
                         else
                         {
+
                             Console.WriteLine("Votre pokémon est à court de capacités spéciales : il effectue une attaque");
                             cki = Console.ReadKey().Key;
                         }
