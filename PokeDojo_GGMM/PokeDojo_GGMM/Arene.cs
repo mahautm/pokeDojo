@@ -204,7 +204,7 @@ namespace PokeDojo_GGMM
         public void AfficherArbreCompetition()
         {
             // affiche la liste des compétiteurs
-            Console.WriteLine("Voici les competiteurs !");
+            Console.WriteLine("Voici les competiteurs !\n");
             foreach (Joueur competiteur in Arbre[0])
             {
                 int index = Arbre[0].IndexOf(competiteur)+1;
@@ -213,7 +213,7 @@ namespace PokeDojo_GGMM
                     numeroJoueur += 0 + "" + index;
                 else
                     numeroJoueur += index;
-                Console.Write("P" + numeroJoueur + " " + competiteur + "\t\t");
+                Console.Write("P" + numeroJoueur + " " + competiteur + "\n");
 
                 if(Arbre[0].IndexOf(competiteur)%4==3)
                     Console.WriteLine();
@@ -223,7 +223,7 @@ namespace PokeDojo_GGMM
             foreach (List<Joueur> Round in Arbre)
             {
                 int round = Arbre.IndexOf(Round) + 1;
-                Console.WriteLine("\n\nRound " + round);
+                Console.WriteLine("\n\nLe round " + round + " est composé des combats :");
 
                 int positionVS = 0;
                 foreach (Joueur competiteurRestant in Round)

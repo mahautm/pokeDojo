@@ -72,7 +72,9 @@ namespace PokeDojo_GGMM
                     {                    
                             if (i == selection)
                             {
-                                Console.ForegroundColor = ConsoleColor.DarkGreen;
+                                //Coloration en fonction de si le Pokémon a déjà été selectionné
+                                //On utilise la multiplication par 3 pour ne tomber que sur les pokémonsau premier stade d'évolution.
+                                Console.ForegroundColor = !(sac.Contains(arene.PokeList1[3 * (depart + i)]))?ConsoleColor.DarkGreen: ConsoleColor.DarkRed;
                                 Console.Write(">>");
                                 Console.WriteLine("\t" + arene.PokeList1[3*(depart+i)].Nom + "\t" + arene.PokeList1[3 * (depart + i)].PV + " PV\t" + arene.PokeList1[3 * (depart + i)].PA + "PA\t" + "Elementaire de " + arene.PokeList1[3 * (depart + i)]._types[arene.PokeList1[3 * (depart + i)].TypeElementaire]);
                                 Console.ResetColor();
@@ -108,18 +110,18 @@ namespace PokeDojo_GGMM
                     {
                         if (selection != 10)
                             selection = (selection + 1);
-                        else if (depart != arene.PokeList1.Count/3 - 11) //!! Combien de pokémons dans la liste Guillaumme ?
+                        else if (depart != arene.PokeList1.Count/3 - 11) 
                             depart += 1;
                     }
 
-
-                } while (cki != ConsoleKey.Enter && cki != ConsoleKey.Spacebar && cki != ConsoleKey.A);
+                    //On verifie que le joueur a effectué une selection, une Annulation, et qu'il n'a pas essayé de sélectionner deux fois le même pokémon.
+                } while ((cki != ConsoleKey.Enter && cki != ConsoleKey.Spacebar && cki != ConsoleKey.A) || sac.Contains(arene.PokeList1[3 * (selection)]));
 
                 //Permettre une annulation
                 if (cki == ConsoleKey.A)
                     sac = new List<Pokemon>();
                 else
-                    sac.Add(arene.PokeList1[selection + depart]);
+                    sac.Add(arene.PokeList1[3*(selection + depart)]);
 
             } while (sac.Count < 3);
             //Créer le joueur personnalisé.
@@ -131,8 +133,10 @@ namespace PokeDojo_GGMM
             arene.Competiteurs[0] = j1;
             arene.Arbre[0][0] = j1;
 
-            Console.WriteLine("Voici les compétiteurs...\n");
+            Console.Clear();
             arene.AfficherArbreCompetition();
+            Console.ReadKey();
+
             for (int roundNumber = 0; roundNumber < 3; roundNumber++)
             {
                 for (int fightNumber = 0; fightNumber < arene.Arbre[roundNumber].Count; fightNumber+=2)
@@ -158,23 +162,21 @@ namespace PokeDojo_GGMM
         public static Joueur JouerCombat(Joueur j1, Joueur j2)
         {
             Console.Clear();
-            //On affiche à gauche le nom du joueur et à droite celui de son adversaire
-            Console.WriteLine("Bienvenue dans ce tournoi :\n\n\t  *****\n {0} vs {1}\n\t  *****\n\nJouons à Pile ou Face pour déterminer qui commence.", j1.Nom, j2.Nom);
-            Console.ReadKey();
-
-            // Si le joueur perd au pile ou face, son adversaire commence, on inverse donc l'ordre.
-            Joueur temp;
-            if (!JouerPileOuFace())
-            {
-                temp = j2;
-                j2 = j1;
-                j1 = temp;
-
-            }
             Random R = new Random();
             j2.Actif = j2.Sac[R.Next(3)];
+            Joueur temp = j2;
             if (j1.EstHumain || j2.EstHumain)
             {
+                //On affiche à gauche le nom du joueur et à droite celui de son adversaire
+                Console.WriteLine("Bienvenue dans ce tournoi :\n\n\t  *****\n {0} vs {1}\n\t  *****\n\nJouons à Pile ou Face pour déterminer qui commence.", j1.Nom, j2.Nom);
+                Console.ReadKey();
+
+                // Si le joueur perd au pile ou face, son adversaire commence, on inverse donc l'ordre.
+                if (!JouerPileOuFace())
+                {
+                    j2 = j1;
+                    j1 = temp;
+                }
                 Console.WriteLine("Appuyez sur un touche, montez sur le Tatami, et choisissez un pokémon !");
                 Console.ReadKey();
 
