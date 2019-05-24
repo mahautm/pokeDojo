@@ -88,7 +88,12 @@ namespace PokeDojo_GGMM
                 {
                     AlterationEtatPA boost = (AlterationEtatPA)alteration;
                     if (boost.Duree == 0)
-                        ennemi.AlterationsEtat.Remove(alteration);
+                    {
+                        boost.Modificateur = 0;
+                        //!!pb de modification de taille de collection avec cette instruction
+                        //!!ennemi.AlterationsEtat.Remove(alteration);
+                    }
+                        
                     else
                         alteration.Duree -= 1;
 
@@ -116,13 +121,18 @@ namespace PokeDojo_GGMM
                     if (!attaqueAbsorbée)
                     {
                         if (bouclier.Duree == 0 || bouclier.PVBouclier < 0)
-                            AlterationsEtat.Remove(bouclier);
+                        {
+                            bouclier.PVBouclier = -1;
+                            //!!pb de modification de taille de collection avec cette instruction
+                            //!!AlterationsEtat.Remove(bouclier);
+                        }
                         else
                             alteration.Duree -= 1;
 
                         bouclier.PVBouclier -= Degats;
                         Degats -= bouclier.PVBouclier;
 
+                        //!! est-ce que cette ligne est prise en compte ?
                         if (Degats > bouclier.PVBouclier)
                             Console.WriteLine("Le bouclier de {0} a été désintégré alors qu'il absorbait {1} points de dégâts.", ennemi.Nom,bouclier.PVBouclier);
                         else
