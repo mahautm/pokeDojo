@@ -154,12 +154,6 @@ namespace PokeDojo_GGMM
                 count++;
             }
 
-            foreach (Pokemon pokemon in ListePokemons)
-            {
-                if (pokemon.Evolution == 0)
-                    pokemon.NouvelleCapacite();
-            }
-
             return ListePokemons;
         }
 
@@ -181,8 +175,12 @@ namespace PokeDojo_GGMM
                 List<Pokemon> pokemons = new List<Pokemon>();
                 foreach (int index in indexPokemons)
                 {
+                    //on copie le modèle présent dans pokeList
                     pokemons.Add(new Pokemon(miniPokemon[index].Nom, miniPokemon[index].PV, miniPokemon[index].PA, miniPokemon[index]._types[miniPokemon[index].TypeElementaire][0]));
                 }
+                foreach (Pokemon poke in pokemons)
+                    poke.NouvelleCapacite();
+
                 dresseurs.Add(new Joueur(dresseur, pokemons));
             }
 

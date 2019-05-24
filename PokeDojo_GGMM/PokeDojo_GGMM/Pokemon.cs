@@ -141,9 +141,8 @@ namespace PokeDojo_GGMM
                             Console.WriteLine("Le bouclier de {0} l'immunise en absorbant {1} points de dégâts.", ennemi.Nom, Degats);
                             bouclier.PVBouclier -= Degats;
                             Degats = 0;
+                            HistoriqueDegats.Add(Degats);
                         }
-                            
-
                     }
                 }
 
@@ -167,8 +166,10 @@ namespace PokeDojo_GGMM
                     HistoriqueDegats.Add(Degats);
                 }
             }
-            if (MarqueurDegats >= PV)
+            if (MarqueurDegats >= PV)            
                 return true;
+            
+                
             return false;
         }
         
@@ -178,7 +179,7 @@ namespace PokeDojo_GGMM
             int typePouvoir = Random.Next(3);
             if(typePouvoir == 0)
             {
-                //!! le poké gagne un shield de 2 tours absorbant jusqu'à [ 50*(3-Evolution) + PV / (2+Evolution) ] dégâts
+                //!! le poké gagne un shield de 2 tours absorbant jusqu'à [ 50*(3-Evolution) + PV / (5-Evolution) ] dégâts
                 CapacitesSpeciales.Add(new CapaciteSpeciale(Nom, _types[TypeElementaire], new List<AlterationEtat> { new AlterationEtatBouclier(2, true, 20*(3-Evolution) + PV/(2+Evolution)) }));
             }
             else

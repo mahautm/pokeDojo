@@ -22,28 +22,48 @@ namespace PokeDojo_GGMM
             Console.ReadLine();
 
         }
-        
+
 
         public static Pokemon EvoluerPokemon(Pokemon pokemon, List<Pokemon> ListePokemons, bool affichage)
         {
-            if (ListePokemons.IndexOf(pokemon) % 3 != 2)
+            foreach (Pokemon poke in ListePokemons)
             {
-                if (affichage)
-                    Console.WriteLine("L'évolution de " + pokemon + " en " + ListePokemons[ListePokemons.IndexOf(pokemon) + 1] + " est un succès.");
+                if (pokemon.Nom == poke.Nom || pokemon.Evolution < 2)
+                {
+                    if (affichage)
+                        Console.WriteLine("L'évolution de " + pokemon + " en " + ListePokemons[ListePokemons.IndexOf(poke) + 1] + " est un succès.");
 
-                //Quand il évolue, le pokémon gagne 2 capacités
-                pokemon.NouvelleCapacite();
-                pokemon.NouvelleCapacite();
+                    //on sauvegarde les capacites non utilisées du pokemon qui évolue
+                    List<CapaciteSpeciale> capacites = new List<CapaciteSpeciale>();
+                    if (pokemon.CapacitesSpeciales.Count != 0)
+                    {
+                        capacites = pokemon.CapacitesSpeciales;
+                    }
 
-                return (ListePokemons[ListePokemons.IndexOf(pokemon) + 1]);
+
+                    //le pokémon évolue en une nouvelle instance du pokémon de référence évolué
+                    pokemon = new Pokemon(ListePokemons[ListePokemons.IndexOf(poke) + 1].Nom, ListePokemons[ListePokemons.IndexOf(poke) + 1].PV, ListePokemons[ListePokemons.IndexOf(poke) + 1].PA, ListePokemons[ListePokemons.IndexOf(poke) + 1]._types[ListePokemons[ListePokemons.IndexOf(poke) + 1].TypeElementaire][0]);
+
+                    if (capacites.Count != 0)
+                        foreach (CapaciteSpeciale capacite in capacites)
+                            pokemon.CapacitesSpeciales.Add(capacite);
+
+                    //Quand il évolue, le pokémon gagne 2 capacités
+                    pokemon.NouvelleCapacite();
+                    pokemon.NouvelleCapacite();
+
+                    return (ListePokemons[ListePokemons.IndexOf(pokemon) + 1]);
+                }
+                else
+                if (pokemon.Nom == poke.Nom || pokemon.Evolution == 2)
+                {
+                    if (affichage)
+                        Console.WriteLine("Impossible de faire évoluer " + pokemon + " : ce pokémon est déjà très badass.");
+                    return pokemon;
+                }
             }
-            else
-            {
-                if (affichage)
-                    Console.WriteLine("Impossible de faire évoluer " + pokemon + " : ce pokémon est déjà très badass.");
-                return pokemon;
-            }
-                
+            //ce cas ne peut pas arriver
+            return null;   
         }
         
         public static void DeroulerPartie()
@@ -83,7 +103,7 @@ namespace PokeDojo_GGMM
                                 //On utilise la multiplication par 3 pour ne tomber que sur les pokémonsau premier stade d'évolution.
                                 Console.ForegroundColor = !(sac.Contains(arene.PokeList1[3 * (depart + i)])) ? ConsoleColor.DarkGreen : ConsoleColor.DarkRed;
                                 Console.Write(">>");
-                                Console.WriteLine("\t" + arene.PokeList1[3 * (depart + i)].Nom + "\t" + arene.PokeList1[3 * (depart + i)].PV + " PV\t" + arene.PokeList1[3 * (depart + i)].PA + "PA\t" + "Elementaire de " + arene.PokeList1[3 * (depart + i)]._types[arene.PokeList1[3 * (depart + i)].TypeElementaire]);
+                                Console.WriteLine("\t" + arene.PokeList1[3 * (depart + i)].Nom + "\t" + arene.PokeList1[3 * (depart + i)].PV + " PV\t" + arene.PokeList1[3 * (depart + i)].PA + "PA\t" + "Elementaire " + arene.PokeList1[3 * (depart + i)]._types[arene.PokeList1[3 * (depart + i)].TypeElementaire]);
                                 Console.ResetColor();
                             }
                             else
@@ -128,7 +148,12 @@ namespace PokeDojo_GGMM
                     if (cki == ConsoleKey.A)
                         sac = new List<Pokemon>();
                     else
-                        sac.Add(arene.PokeList1[3 * (selection + depart)]);
+                    {
+                        Pokemon poke = new Pokemon(arene.PokeList1[3 * (selection + depart)].Nom, arene.PokeList1[3 * (selection + depart)].PV, arene.PokeList1[3 * (selection + depart)].PA, arene.PokeList1[3 * (selection + depart)]._types[arene.PokeList1[3 * (selection + depart)].TypeElementaire][0]);
+                        poke.NouvelleCapacite();
+                        sac.Add(poke);
+                    }
+                        
 
                 } while (sac.Count < 3);
                 //Créer le joueur personnalisé.
@@ -152,7 +177,10 @@ namespace PokeDojo_GGMM
                         Joueur victorieux = JouerCombat(arene.Arbre[roundNumber][fightNumber], arene.Arbre[roundNumber][fightNumber + 1], arene);
                         Console.WriteLine("\n" + victorieux.Nom + " a gagné son combat :)");
                         arene.Arbre[roundNumber + 1].Add(victorieux);
+
+                        Console.WriteLine("\n-- Presser une touche pour passer --");
                         Console.ReadKey();
+
                     }
                     //On remet tous les PV des gagnants à leur Maximum
                     foreach (Joueur j in arene.Arbre[roundNumber + 1])
@@ -380,13 +408,13 @@ namespace PokeDojo_GGMM
             {
                 Console.Clear();
                 if (choix == 0)
-                    Console.WriteLine(">>\tAttaque\t\t\t\tReplis\n\tCapacité spéciale\t\tFuite");
+                    Console.WriteLine(">>\tAttaque\t\t\t\tChanger de pokémon\n\tCapacité spéciale\t\tFuite");
                 else if (choix == 1)
-                    Console.WriteLine("\tAttaque\t\t\t>>\tReplis\n\tCapacité spéciale\t\tFuite");
+                    Console.WriteLine("\tAttaque\t\t\t>>\tChanger de pokémon\n\tCapacité spéciale\t\tFuite");
                 else if (choix == 2)
-                    Console.WriteLine("\tAttaque\t\t\t\tReplis\n>>\tCapacité spéciale\t\tFuite");
+                    Console.WriteLine("\tAttaque\t\t\t\tChanger de pokémon\n>>\tCapacité spéciale\t\tFuite");
                 else if (choix == 3)
-                    Console.WriteLine("\tAttaque\t\t\t\tReplis\n\tCapacité spéciale\t>>\tFuite");
+                    Console.WriteLine("\tAttaque\t\t\t\tChanger de pokémon\n\tCapacité spéciale\t>>\tFuite");
 
                 //Attente puis enregistrement d'une entrée utilisateur
                 cki = Console.ReadKey().Key;
@@ -521,8 +549,8 @@ namespace PokeDojo_GGMM
                 Console.WriteLine();
             }
             Console.ResetColor();
-            Console.WriteLine("{0} : {1}/{2}PV\t\t{3} : {4}/{5}PV\n", j1.Actif.Nom, j1.Actif.PV - j1.Actif.MarqueurDegats, j1.Actif.PV, j2.Actif.Nom, j2.Actif.PV - j2.Actif.MarqueurDegats, j2.Actif.PV);
-
+            Console.WriteLine("{0} : {1}/{2}PV\t\t{3} : {4}/{5}PV - Elementaire {6} - craint {7}", j1.Actif.Nom, j1.Actif.PV - j1.Actif.MarqueurDegats, j1.Actif.PV, j2.Actif.Nom, j2.Actif.PV - j2.Actif.MarqueurDegats, j2.Actif.PV, j2.Actif._types[j2.Actif.TypeElementaire], j2.Actif._types[j2.Actif.TypeVulnerable]);
+            Console.WriteLine("Votre pokémon est de type {0} : il craint le type {1} !\n", j1.Actif._types[j1.Actif.TypeElementaire], j1.Actif._types[j1.Actif.TypeVulnerable]);
         }
     }
 }
