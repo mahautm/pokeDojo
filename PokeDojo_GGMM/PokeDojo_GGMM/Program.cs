@@ -156,7 +156,7 @@ namespace PokeDojo_GGMM
                     {
                         if (selection != 10)
                             selection = (selection + 1);
-                        else if (depart != 6) //!! Combien de pokémons dans la liste Guillaumme ?
+                        else if (depart != 40) //!! Combien de pokémons dans la liste Guillaumme ?
                             depart += 1;
                     }
 
