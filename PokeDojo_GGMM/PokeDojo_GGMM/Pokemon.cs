@@ -30,6 +30,7 @@ namespace PokeDojo_GGMM
 
         //le niveau d'évolution de 0 à 2 du pokémon
         public int Evolution { get; set; }
+        public int KillCount { get; set; }
 
         private static Random Random = new Random();
 
