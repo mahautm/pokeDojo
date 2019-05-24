@@ -28,7 +28,7 @@ namespace PokeDojo_GGMM
         {
             foreach (Pokemon poke in ListePokemons)
             {
-                if (pokemon.Nom == poke.Nom || pokemon.Evolution < 2)
+                if (pokemon.Nom == poke.Nom && pokemon.Evolution < 2)
                 {
                     if (affichage)
                         Console.WriteLine("L'évolution de " + pokemon + " en " + ListePokemons[ListePokemons.IndexOf(poke) + 1] + " est un succès.");
@@ -52,10 +52,10 @@ namespace PokeDojo_GGMM
                     pokemon.NouvelleCapacite();
                     pokemon.NouvelleCapacite();
 
-                    return (ListePokemons[ListePokemons.IndexOf(pokemon) + 1]);
+                    return (pokemon);
                 }
                 else
-                if (pokemon.Nom == poke.Nom || pokemon.Evolution == 2)
+                if (pokemon.Nom == poke.Nom && pokemon.Evolution == 2)
                 {
                     if (affichage)
                         Console.WriteLine("Impossible de faire évoluer " + pokemon + " : ce pokémon est déjà très badass.");
