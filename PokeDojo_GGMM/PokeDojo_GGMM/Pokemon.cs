@@ -43,6 +43,16 @@ namespace PokeDojo_GGMM
             PA = pA;
             HistoriqueDegats = new List<int>();
             MarqueurDegats = 0;
+                        
+            if (pV < 76)
+                Evolution = 0;
+            else
+            {
+                if (pV < 151)
+                    Evolution = 1;
+                else
+                    Evolution = 2;
+            }
 
             int i = 0;
             bool stay = true;
@@ -90,9 +100,9 @@ namespace PokeDojo_GGMM
                     AlterationEtatPA boost = (AlterationEtatPA)alteration;
                     if (boost.Duree == 0)
                     {
-                        boost.Modificateur = 0;
-                        //!!pb de modification de taille de collection avec cette instruction
-                        //!!ennemi.AlterationsEtat.Remove(alteration);
+                        //boost.Modificateur = 0;
+                        //!!pb de modification de taille de collection
+                        ennemi.AlterationsEtat.Remove(alteration);
                     }
                         
                     else
@@ -113,7 +123,7 @@ namespace PokeDojo_GGMM
             // gestion bouclier
             bool attaqueAbsorbée = false;
 
-            foreach (AlterationEtat alteration in ennemi.AlterationsEtat)
+            foreach (AlterationEtat alteration in AlterationsEtat)
             {
                 if(alteration is AlterationEtatBouclier)
                 {
@@ -123,9 +133,9 @@ namespace PokeDojo_GGMM
                     {
                         if (bouclier.Duree == 0 || bouclier.PVBouclier < 0)
                         {
-                            bouclier.PVBouclier = -1;
-                            //!!pb de modification de taille de collection avec cette instruction
-                            //!!AlterationsEtat.Remove(bouclier);
+                            //bouclier.PVBouclier = -1;
+                            //!!pb de modification de taille de collection
+                            AlterationsEtat.Remove(bouclier);
                         }
                         else
                             alteration.Duree -= 1;

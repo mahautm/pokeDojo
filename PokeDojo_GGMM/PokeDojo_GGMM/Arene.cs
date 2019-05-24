@@ -165,18 +165,23 @@ namespace PokeDojo_GGMM
 
         public static List<Joueur> CreerJoueurs(List<string> nomsDresseurs, List<Pokemon> pokeList, Random random)
         {
+            List<Pokemon> miniPokemon = new List<Pokemon>();
+            foreach (Pokemon pokemon in pokeList)
+                if(pokemon.Evolution==0)
+                    miniPokemon.Add(pokemon);
+
             //Liste des dresseurs
             List<Joueur> dresseurs = new List<Joueur>();
 
             // création des 16 Joueurs
             foreach (string dresseur in nomsDresseurs)
             {
-                List<int> indexPokemons = GenererNint(3, 0, 16, random);
+                List<int> indexPokemons = GenererNint(3, 0, 47, random);
 
                 List<Pokemon> pokemons = new List<Pokemon>();
                 foreach (int index in indexPokemons)
                 {
-                    pokemons.Add(pokeList[index * 3]);
+                    pokemons.Add(new Pokemon(pokeList[index].Nom, pokeList[index].PV, pokeList[index].PA, pokeList[index]._types[pokeList[index].TypeElementaire][0]));
                 }
                 dresseurs.Add(new Joueur(dresseur, pokemons));
             }
