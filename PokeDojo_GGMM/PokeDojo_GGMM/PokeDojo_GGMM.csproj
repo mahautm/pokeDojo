@@ -43,7 +43,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AlterationEtat.cs" />
+    <Compile Include="AlterationEtatBouclier.cs" />
     <Compile Include="Arene.cs" />
+    <Compile Include="AlterationEtatPA.cs" />
+    <Compile Include="CapaciteSpeciale.cs" />
     <Compile Include="Joueur.cs" />
     <Compile Include="Pokemon.cs" />
     <Compile Include="Program.cs" />
