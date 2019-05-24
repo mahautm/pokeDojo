@@ -84,6 +84,7 @@ namespace PokeDojo_GGMM
 
             List<string> types = new List<string>(new string[] { "Plante", "Feu", "Eau", "Glace", "Dragon", "Ténèbres", "Argent", "Roche" });
 
+            DeroulerPartie(arene);
     }
 
     public List<Pokemon> CreerPokemons(List<string> basique, List<string> alpha, List<string> beta, List<string> type)
