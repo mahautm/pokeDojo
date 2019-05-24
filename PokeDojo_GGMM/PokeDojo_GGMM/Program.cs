@@ -116,21 +116,18 @@ namespace PokeDojo_GGMM
                     Console.WriteLine("Bonjour {0}, Avec quels Pokemons voulez vous jouer ?",nom);
                     int i = 0;
                     //Afficher la liste des pokémons
-                    while (i < 48)
-                    {
-                        if (arene.PokeList1[depart + i].Evolution == 0)
-                        {
+                    while (i <= 10)
+                    {                    
                             if (i == selection)
                             {
                                 Console.ForegroundColor = ConsoleColor.DarkGreen;
                                 Console.Write(">>");
-                                Console.WriteLine("\t" + arene.PokeList1[3*i].Nom + "\t" + arene.PokeList1[3*i].PV + " PV\t" + arene.PokeList1[3*i].PA + "PA\t" + "Elementaire de " + arene.PokeList1[3*i]._types[arene.PokeList1[3*i].TypeElementaire]);
+                                Console.WriteLine("\t" + arene.PokeList1[3*(depart+i)].Nom + "\t" + arene.PokeList1[3 * (depart + i)].PV + " PV\t" + arene.PokeList1[3 * (depart + i)].PA + "PA\t" + "Elementaire de " + arene.PokeList1[3 * (depart + i)]._types[arene.PokeList1[3 * (depart + i)].TypeElementaire]);
                                 Console.ResetColor();
                             }
                             else
-                                Console.WriteLine("\t" + arene.PokeList1[3*i]);
+                                Console.WriteLine("\t" + arene.PokeList1[3 * (depart + i)]);
                             i++;
-                        }
                     }
 
                     //Rappel des choix
@@ -159,7 +156,7 @@ namespace PokeDojo_GGMM
                     {
                         if (selection != 10)
                             selection = (selection + 1);
-                        else if (depart != 6) //!! Combien de pokémons dans la liste Guillaumme ?
+                        else if (depart != arene.PokeList1.Count/3 - 11) //!! Combien de pokémons dans la liste Guillaumme ?
                             depart += 1;
                     }
 
