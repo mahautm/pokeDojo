@@ -13,7 +13,10 @@ namespace PokeDojo_GGMM
             //!! LIENS POUR LES POKEMONS
             //!! https://bulbapedia.bulbagarden.net/wiki/List_of_Pok%C3%A9mon_by_base_stats_(Generation_VII-present)
             //!! https://www.pokebip.com/pokedex/4eme_generation_pokeliste_liste_des_pokemon.html
-
+            //Joueur j1 = new Joueur();
+            //Joueur j2 = new Joueur();
+            //Console.Write(JouerCombat(j1, j2));
+            //Console.ReadKey();
             DeroulerPartie();
 
             Console.ReadLine();
@@ -59,7 +62,7 @@ namespace PokeDojo_GGMM
             ConsoleKey cki;
             List<Pokemon> sac = new List<Pokemon>();
             Arene arene = new Arene();
-
+           
             do
             {
                 do
@@ -139,31 +142,48 @@ namespace PokeDojo_GGMM
 
             for (int roundNumber = 0; roundNumber < 3; roundNumber++)
             {
+                arene.Arbre.Add(new List<Joueur>());
                 for (int fightNumber = 0; fightNumber < arene.Arbre[roundNumber].Count; fightNumber+=2)
                 {
-                    JouerCombat(arene.Arbre[roundNumber][fightNumber], arene.Arbre[roundNumber][fightNumber + 1]);          
+                    Joueur victorieux = JouerCombat(arene.Arbre[roundNumber][fightNumber], arene.Arbre[roundNumber][fightNumber + 1],arene);
+                    Console.WriteLine("\n" + victorieux.Nom + " a gagné son combat :)");
+                    arene.Arbre[roundNumber + 1].Add(victorieux);
+                    Console.ReadKey();
                 }
+                //On remet tous les PV des gagnants à leur Maximum
+                foreach(Joueur j in arene.Arbre[roundNumber + 1])
+                {
+                    foreach(Pokemon p in j.Sac)
+                    {
+                        p.MarqueurDegats = 0;
+                        p.HistoriqueDegats.Clear();
+                    }
+                }
+                //On affiche le nouvel Arbre des combats
+                arene.AfficherArbreCompetition();
+                Console.ReadKey();
+
             }
             //!! 2 : Faire jouer le match entre le joueur et son adversaire
-                //!! Choisir au hasard lequel commence grâce au pile ou face
-                //!! Chacun leur tour les joueurs choisissent leurs actions, à la fin l'un d'entre eux meurent
-                    //!! Si le joueur meurt, aller à l'écran de fin, montrer les arbres simulés pour qu'il sache quel joueur virtuel a gagné
-                    //!! Si l'adversaire meurt, aller à l'étape suivante
+            //!! Choisir au hasard lequel commence grâce au pile ou face
+            //!! Chacun leur tour les joueurs choisissent leurs actions, à la fin l'un d'entre eux meurent
+            //!! Si le joueur meurt, aller à l'écran de fin, montrer les arbres simulés pour qu'il sache quel joueur virtuel a gagné
+            //!! Si l'adversaire meurt, aller à l'étape suivante
 
             //!! 3 : Simuler les matchs entre les joueurs aléatoires
-                //!! Faire jouer une partie mais sans afficher les écrans texte intermédiaires
-                //!! OU Assigner une probabilité de victoire en fonction du type et de la puissance d'attaque en mode 'light'
+            //!! Faire jouer une partie mais sans afficher les écrans texte intermédiaires
+            //!! OU Assigner une probabilité de victoire en fonction du type et de la puissance d'attaque en mode 'light'
             //!! Itérer jusqu'à la finale
-                //!! Ajouter un écran de victoire et un HIGHSCORES pour l'UX
-            ;
+            //!! Ajouter un écran de victoire et un HIGHSCORES pour l'UX
         }
         // Dans la version actuelle du jeu il ne peut y avoir qu'un joueur humain.
         // S'il y a un joueur humain, c'est j1
-        public static Joueur JouerCombat(Joueur j1, Joueur j2)
+        public static Joueur JouerCombat(Joueur j1, Joueur j2, Arene arene)
         {
             Console.Clear();
             Random R = new Random();
             j2.Actif = j2.Sac[R.Next(3)];
+            j1.Actif = j1.Sac[R.Next(3)];
             Joueur temp = j2;
             if (j1.EstHumain || j2.EstHumain)
             {
@@ -201,14 +221,22 @@ namespace PokeDojo_GGMM
             while (true)
             {
                 //On joue un tour
-
-                pokeVivant = JouerTour(j1, j2);
+                Console.Clear();
+                pokeVivant = JouerTour(j1, j2,arene);
                 //On verifie que le pokemon n'et pas mort pendant ce tours
                 if (!pokeVivant)
                 {
-                    //s'il est mort on regarde s'il reste un pokémon vivant dans le sac de son dresseur,
+                    //si le poké qui l'a tué en est a son deuxième meurtre, on le fait évoluer. de toute façon on incrémente son KillCount
+                    if (++j1.Actif.KillCount == 2 && j1.Actif.Evolution < 3)
+                        EvoluerPokemon(j1.Actif, arene.PokeList1);
+                        
 
-                    Console.Write("{0} est KO...",j1.Actif.Nom);
+
+
+
+                    //s'il est mort on regarde s'il reste un pokémon vivant dans le sac de son dresseur,
+                    if(j1.EstHumain || j2.EstHumain)
+                        Console.WriteLine("{0} est KO...",j1.Actif.Nom);
 
                     foreach (Pokemon p in j2.Sac)
                     {
@@ -225,7 +253,8 @@ namespace PokeDojo_GGMM
                     //Si le joueur est humain et qu'il n'a pas perdu, on le laisse choisir lui même le pokémon qu'il veut utiliser.
                     if (j2.EstHumain)
                         ChoisirPokemonHumain(j2);
-                    Console.WriteLine(" {0} Le remplace avec {1} !", j2.Nom, j2.Actif.Nom);
+                    if (j1.EstHumain || j2.EstHumain)
+                        Console.WriteLine(" {0} Le remplace avec {1} !", j2.Nom, j2.Actif.Nom);
                     Console.ReadKey();
                     //On inverse ensuite les joueurs pour alterner le joueur qui défend et celui qui attaque.
                 }
@@ -235,7 +264,7 @@ namespace PokeDojo_GGMM
             }
         }
 
-        public static bool JouerTour(Joueur j1, Joueur j2)
+        public static bool JouerTour(Joueur j1, Joueur j2, Arene arene)
         {
             Random R = new Random();
             int choix;
@@ -420,7 +449,7 @@ namespace PokeDojo_GGMM
                         else Console.Write("*|");
                     }
 
-                    Console.Write("\t{0} \t: {1} PV, \t{2} PA", j.Sac[i].Nom, j.Sac[i].PV - j.Sac[i].MarqueurDegats, j.Sac[i].PA);
+                    Console.Write("\t{0} :\t\t {1} PV, \t{2} PA", j.Sac[i].Nom, j.Sac[i].PV - j.Sac[i].MarqueurDegats, j.Sac[i].PA);
                     if (j.Sac[i].MarqueurDegats > j.Sac[i].PV)
                     {
                         Console.Write("\tKO");
