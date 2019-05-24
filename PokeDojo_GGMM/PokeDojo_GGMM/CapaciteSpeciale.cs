@@ -8,13 +8,6 @@ namespace PokeDojo_GGMM
 {
     class CapaciteSpeciale
     {
-        /*
-        public static List<string> __nomsCapaciteSpeciale = new List<string>
-        {
-            "Atak", "Clok", "Viok", "Souk", "Flik",
-            "Cirk", "Phok", "Plak", "Bisk", "Rauk"
-        };
-        */
         public static List<string> __nomsCapaciteSpeciale = new List<string>
         {
             "Chok", "Clok", "Viok", "Tork", "Flok",
