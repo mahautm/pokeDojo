@@ -89,6 +89,12 @@ namespace PokeDojo_GGMM
             //return Nom;
         }
 
+        //définit si une altération d'état est terminée
+        private static bool isOver(AlterationEtat alteration)
+        {
+            return (alteration.Duree <= 0);
+        }
+
         public bool RecevoirDegats(Pokemon ennemi)
         {
             // gestion puissance d'attaque
@@ -98,56 +104,45 @@ namespace PokeDojo_GGMM
                 if (alteration is AlterationEtatPA)
                 {
                     AlterationEtatPA boost = (AlterationEtatPA)alteration;
-                    if (boost.Duree == 0)
-                    {
-                        //boost.Modificateur = 0;
-                        //!!pb de modification de taille de collection
-                        ennemi.AlterationsEtat.Remove(alteration);
-                    }
-                        
-                    else
-                        alteration.Duree -= 1;
-
+                    alteration.Duree -= 1;
                     forceAttaque += boost.Modificateur;
                 }
             }
 
             Random R = new Random();
-            int Degats = (int)Math.Ceiling(
-                (forceAttaque + R.Next(-20,20)) / (double)100 * ennemi.PA
-                );
+            int Degats = (int)Math.Ceiling( (forceAttaque + R.Next(-20,20)) / (double)100 * ennemi.PA);
 
-            //!! cas où les dégâts sont tellement réduits qu'ils pourraient soigner l'ennemi (100%-150% -> -50% * PA infligé en dégâts , soit Dégâts < 0 !)
+            //!! cas où les dégâts sont tellement réduits qu'ils pourraient soigner l'ennemi (100 - 150 -> -50% * PA infligé en dégâts , soit Dégâts < 0 !)
             if (Degats < 0) Degats = 0;
 
             // gestion bouclier
             bool attaqueAbsorbée = false;
-
             foreach (AlterationEtat alteration in AlterationsEtat)
             {
                 if(alteration is AlterationEtatBouclier)
                 {
-                    AlterationEtatBouclier bouclier = (AlterationEtatBouclier)alteration;
-                    //AlterationEtatBouclier bouclier = new AlterationEtatBouclier(AlterationsEtat[indexAlteration].;
+                    AlterationEtatBouclier bouclier = (AlterationEtatBouclier)alteration;                    
                     if (!attaqueAbsorbée)
                     {
-                        if (bouclier.Duree == 0 || bouclier.PVBouclier < 0)
-                        {
-                            //bouclier.PVBouclier = -1;
-                            //!!pb de modification de taille de collection
-                            AlterationsEtat.Remove(bouclier);
-                        }
-                        else
-                            alteration.Duree -= 1;
-
-                        bouclier.PVBouclier -= Degats;
-                        Degats -= bouclier.PVBouclier;
-
+                        alteration.Duree -= 1;
+                                               
                         //!! est-ce que cette ligne est prise en compte ?
                         if (Degats > bouclier.PVBouclier)
-                            Console.WriteLine("Le bouclier de {0} a été désintégré alors qu'il absorbait {1} points de dégâts.", ennemi.Nom,bouclier.PVBouclier);
+                        {
+                            //!! s'affiche ?
+                            Console.WriteLine("Le bouclier de {0} a été désintégré alors qu'il absorbait {1} points de dégâts.", ennemi.Nom, bouclier.PVBouclier);
+                            bouclier.PVBouclier = 0;
+                            Degats -= bouclier.PVBouclier;
+                        }
+                            
                         else
-                            Console.WriteLine("Le bouclier de {0} l'immunise en absorbant {1} points de dégâts.", ennemi.Nom,Degats);
+                        {
+                            //!! s'affiche ?
+                            Console.WriteLine("Le bouclier de {0} l'immunise en absorbant {1} points de dégâts.", ennemi.Nom, Degats);
+                            bouclier.PVBouclier -= Degats;
+                            Degats = 0;
+                        }
+                            
 
                     }
                 }
@@ -155,7 +150,8 @@ namespace PokeDojo_GGMM
                 if (Degats <= 0) attaqueAbsorbée = true;
             }
 
-                       
+            //Retire toutes les altérations d'état terminées
+            AlterationsEtat.RemoveAll(isOver);
 
             // application des dégâts
             if (Degats > 0)

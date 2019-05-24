@@ -181,7 +181,7 @@ namespace PokeDojo_GGMM
                 List<Pokemon> pokemons = new List<Pokemon>();
                 foreach (int index in indexPokemons)
                 {
-                    pokemons.Add(new Pokemon(pokeList[index].Nom, pokeList[index].PV, pokeList[index].PA, pokeList[index]._types[pokeList[index].TypeElementaire][0]));
+                    pokemons.Add(new Pokemon(miniPokemon[index].Nom, miniPokemon[index].PV, miniPokemon[index].PA, miniPokemon[index]._types[miniPokemon[index].TypeElementaire][0]));
                 }
                 dresseurs.Add(new Joueur(dresseur, pokemons));
             }
