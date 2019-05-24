@@ -14,60 +14,12 @@ namespace PokeDojo_GGMM
             //!! https://bulbapedia.bulbagarden.net/wiki/List_of_Pok%C3%A9mon_by_base_stats_(Generation_VII-present)
             //!! https://www.pokebip.com/pokedex/4eme_generation_pokeliste_liste_des_pokemon.html
 
-
-
-            //Création de la liste des 18 pokémons et de leurs 32 évolutions
-            //!! Affichage
-
-
-            {
-                /*
-                    foreach (Pokemon poke in PokeList)
-                    {
-                        if (PokeList.IndexOf(poke) % 6 == 0)
-                            Console.WriteLine("\n\nElement " + types[poke.TypeElementaire]);
-
-                        if (PokeList.IndexOf(poke) % 6 == 3)
-                            Console.WriteLine();
-                        Console.Write(poke + "\t\t");
-                    }
-                    */
-            }
-            // Noms des Joueurs
-
             DeroulerPartie();
-            
 
-            //!! tests Guillaume
-            {
-            /*
-            Console.WriteLine("\n\nVoici les dresseurs !!!");
-            foreach (Joueur dresseur in dresseurs)
-                Console.WriteLine(dresseur);
-            
-            List<int> indexTest = GenererNint(10, 0, 16, random);
-
-            Console.WriteLine("\n\nEvolution !!!");
-            foreach (int index in indexTest)
-            {
-                Console.WriteLine(EvoluerPokemon(PokeList[index], PokeList).ToString(true) + "\n");
-            }
-
-            AlterationEtatPA alter = new AlterationEtatPA(3, true, -30);
-            AlterationEtatPA alter2 = new AlterationEtatPA(3, false, 30);
-            CapaciteSpeciale test = new CapaciteSpeciale(PokeList[1].Nom, types[PokeList[1].TypeElementaire], new List<AlterationEtat> { alter,alter2 });
-
-            Console.WriteLine(test);
-            */
-            }
             Console.ReadLine();
 
         }
-
-
-        //!!=========
-        //FIN DU MAIN
-        //!!=========
+        
 
         public static Pokemon EvoluerPokemon(Pokemon pokemon, List<Pokemon> ListePokemons)
         {
